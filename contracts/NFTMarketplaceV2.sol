@@ -17,7 +17,7 @@ contract NFTMarketplaceV2 is
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
         ERC721Upgradeable.__ERC721_init("NFTMarketPlace", "NFTMRKT");
         setBaseURI(
-            ""
+            "https://rh25q24tvf.execute-api.eu-west-2.amazonaws.com/dev/token?id="
         );
     }
 

@@ -17,11 +17,16 @@ contract NFTMarketplace is
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
         ERC721Upgradeable.__ERC721_init("NFTMarketPlace", "NFTMRKT");
         setBaseURI(
-            ""
+            "https://rh25q24tvf.execute-api.eu-west-2.amazonaws.com/dev/token?id="
         );
     }
 
     event TokenMetaReturn(TokenMeta data, uint256 id);
+
+     modifier onlyOwnerOfToken(uint _tokenID) {
+      require(msg.sender == ownerOf(_tokenID));
+      _;
+   }
 
     function fetchBaseURI() internal view virtual returns (string memory) {
         return baseURI;
@@ -67,18 +72,16 @@ contract NFTMarketplace is
         _tokenMeta[_tokenId] = token;
     }
     
-    function SellNFT(uint256 _tokenId, uint256 _price) public {
-        require(_exists(_tokenId));
-        require(ownerOf(_tokenId) == _msgSender());
+    function SellNFT(uint256 _tokenId, uint256 _price) public onlyOwnerOfToken(_tokenId) {
+        require(_exists(_tokenId));      
 
         _tokenMeta[_tokenId].bidSale = false;
         _tokenMeta[_tokenId].directSale = true;
         _tokenMeta[_tokenId].price = _price;
     }
 
-     function _setTokenMeta(uint256 _tokenId, TokenMeta memory _meta) private {
-        require(_exists(_tokenId));
-        require(ownerOf(_tokenId) == _msgSender());
+     function _setTokenMeta(uint256 _tokenId, TokenMeta memory _meta) private onlyOwnerOfToken(_tokenId) {
+        require(_exists(_tokenId));        
         _tokenMeta[_tokenId] = _meta;
     }
 

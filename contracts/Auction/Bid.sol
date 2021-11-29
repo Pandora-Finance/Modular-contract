@@ -37,18 +37,19 @@ contract NFTBid is
             _tokenId,
             ownerOf(_tokenId),
             msg.sender,
-            msg.value
+            msg.value,
+            false
         );
         Bids[_tokenId].push(bid);
+        // Bids[_tokenId].push(BidOrder(_tokenId, _sellerAddress, _buyerAddress, _bidPrice));
 
         emit BidOrderReturn(bid);
     }
     
 
 
-     function SellNFT_byBid(uint256 _tokenId, uint256 _price) public {
-        require(_exists(_tokenId));
-        require(ownerOf(_tokenId) == _msgSender());
+     function SellNFT_byBid(uint256 _tokenId, uint256 _price) public onlyOwnerOfToken(_tokenId) {
+        require(_exists(_tokenId));       
 
         _tokenMeta[_tokenId].directSale = false;
         _tokenMeta[_tokenId].bidSale = true;
@@ -58,16 +59,18 @@ contract NFTBid is
 
     function executeBidOrder(uint256 _tokenId, uint256 _bidOrderID)
         public
-        nonReentrant
+        nonReentrant onlyOwnerOfToken(_tokenId)
     {
-        require(msg.sender == ownerOf(_tokenId), "Only Owner can Accept a Bid");
+        
+       // TokenMeta memory token = _tokenMeta[_tokenId];
         
         safeTransferFrom(
             ownerOf(_tokenId),
             Bids[_tokenId][_bidOrderID].buyerAddress,
             _tokenId
         );
-
+        // address sendTo = token.currentOwner;
+        // payable(sendTo).transfer(msg.value);
         payable(msg.sender).transfer(Bids[_tokenId][_bidOrderID].price);
 
         _tokenMeta[_tokenId].previousOwner = _tokenMeta[_tokenId].currentOwner;
@@ -77,21 +80,34 @@ contract NFTBid is
         _tokenMeta[_tokenId].bidSale = false;
         _tokenMeta[_tokenId].status = false;
 
+       
+        emit BidExecuted(Bids[_tokenId][_bidOrderID].price);
+
     }
 
-    // function withdrawBidMoney(uint _tokenId) public {
+  function withdrawBidMoney(uint _tokenId, uint _bidId) public {
+        require(msg.sender != _tokenMeta[_tokenId].currentOwner, "Only Bidder other than the owner are allowed to withdraw money");
+        // BidOrder[] memory bids = Bids[_tokenId];
 
-    //     require(msg.sender != _tokenMeta[_tokenId].currentOwner, "Only Bidder other than the owner are allowed to withdraw money");
+        require(Bids[_tokenId][_bidId].buyerAddress == msg.sender, "Only the Bidder of that specific Bid can withdraw back his funds");
+        require(Bids[_tokenId][_bidId].withdrawn == false," You have already Withdrawn");
+        if (payable(msg.sender).send(Bids[_tokenId][_bidId].price)){
+            Bids[_tokenId][_bidId].withdrawn = true;
+        }
+        else {
+            revert("No Money left!");
+        }
 
-    //     BidOrder[] memory bids = Bids[_tokenId];
-
-    //     for (uint256 i = 0; i < bids.length; i++) {
-    //         if(bids[i].buyerAddress == msg.sender){
-    //             if (!payable(bids[i].buyerAddress).send(bids[i].price)) {
-    //                 revert("Cannot withdraw, try again later");
-    //             }   
-    //         }
-    //     }
-    // }
-
+        //  if(!payable(msg.sender).send(Bids[_tokenId][_bidId].price) ){
+        //     revert("Cannot withdraw, try again later");
+        // } 
+        
+        // for (uint256 i = 0; i < bids.length; i++) {
+        //     if(bids[i].buyerAddress == msg.sender){
+        //         if (!payable(bids[i].buyerAddress).send(bids[i].price)) {
+        //             revert("Cannot withdraw, try again later");
+        //         }   
+        //     }
+        // }
+    }
 }

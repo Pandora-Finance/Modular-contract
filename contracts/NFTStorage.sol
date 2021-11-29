@@ -26,7 +26,8 @@ contract NFTV1Storage is NFTAdminStorage {
         uint256 numberOfTransfers;
     }
 
-    mapping(uint256 => TokenMeta) public _tokenMeta;
+    mapping(uint256 => TokenMeta) public _tokenMeta;  
+   
 
     uint public _tokenIds;
 
@@ -35,6 +36,7 @@ contract NFTV1Storage is NFTAdminStorage {
         address sellerAddress;
         address buyerAddress;
         uint256 price;
+        bool withdrawn;
     }
 
     mapping(uint256 => BidOrder[]) public Bids;
