@@ -21,8 +21,7 @@ contract NFTBid is
     }
 
     
-    function Bid(uint256 _tokenId) public payable {
-        require(_exists(_tokenId));
+    function Bid(uint256 _tokenId) public payable tokenExists(_tokenId){        
         require(ownerOf(_tokenId) != _msgSender(), "Owners Can't Bid");
         require(
             _tokenMeta[_tokenId].status == true,
@@ -48,9 +47,8 @@ contract NFTBid is
     
 
 
-     function SellNFT_byBid(uint256 _tokenId, uint256 _price) public onlyOwnerOfToken(_tokenId) {
-        require(_exists(_tokenId));       
-
+     function SellNFT_byBid(uint256 _tokenId, uint256 _price) public onlyOwnerOfToken(_tokenId) tokenExists(_tokenId) {
+       
         _tokenMeta[_tokenId].directSale = false;
         _tokenMeta[_tokenId].bidSale = true;
         _tokenMeta[_tokenId].price = _price;
@@ -59,9 +57,8 @@ contract NFTBid is
 
     function executeBidOrder(uint256 _tokenId, uint256 _bidOrderID)
         public
-        nonReentrant onlyOwnerOfToken(_tokenId)
-    {
-        
+        nonReentrant onlyOwnerOfToken(_tokenId) tokenExists(_tokenId)
+    {        
        // TokenMeta memory token = _tokenMeta[_tokenId];
         
         safeTransferFrom(

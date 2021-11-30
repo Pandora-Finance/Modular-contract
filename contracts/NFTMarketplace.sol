@@ -28,6 +28,11 @@ contract NFTMarketplace is
       _;
    }
 
+   modifier tokenExists(uint _tokenID) {
+        require(_exists(_tokenID));   
+      _;
+   }
+
     function fetchBaseURI() internal view virtual returns (string memory) {
         return baseURI;
     }
@@ -72,16 +77,13 @@ contract NFTMarketplace is
         _tokenMeta[_tokenId] = token;
     }
     
-    function SellNFT(uint256 _tokenId, uint256 _price) public onlyOwnerOfToken(_tokenId) {
-        require(_exists(_tokenId));      
-
+    function SellNFT(uint256 _tokenId, uint256 _price) public onlyOwnerOfToken(_tokenId) tokenExists(_tokenId){
         _tokenMeta[_tokenId].bidSale = false;
         _tokenMeta[_tokenId].directSale = true;
         _tokenMeta[_tokenId].price = _price;
     }
 
-     function _setTokenMeta(uint256 _tokenId, TokenMeta memory _meta) private onlyOwnerOfToken(_tokenId) {
-        require(_exists(_tokenId));        
+     function _setTokenMeta(uint256 _tokenId, TokenMeta memory _meta) private onlyOwnerOfToken(_tokenId) tokenExists(_tokenId) {             
         _tokenMeta[_tokenId] = _meta;
     }
 
