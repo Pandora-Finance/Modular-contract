@@ -17,7 +17,7 @@ contract NFTMarketplace is
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
         ERC721Upgradeable.__ERC721_init("NFTMarketPlace", "NFTMRKT");
         setBaseURI(
-            "https://rh25q24tvf.execute-api.eu-west-2.amazonaws.com/dev/token?id="
+            ""
         );
     }
 
@@ -62,7 +62,7 @@ contract NFTMarketplace is
         TokenMeta memory token = _tokenMeta[_tokenId];
         require(
             msg.value >= token.price,
-            "Price should be greater than or equal to nft price"
+            "Price >= nft price"
         );
         _transfer(payable(tokenSeller), payable(msg.sender), _tokenId);
         address sendTo = token.currentOwner;

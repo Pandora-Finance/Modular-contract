@@ -14,11 +14,11 @@ contract NFTBid is
         require(ownerOf(_tokenId) != _msgSender(), "Owners Can't Bid");
         require(
             _tokenMeta[_tokenId].status == true,
-            "NFT is not open for sale right now"
+            "NFT not open for sale"
         );
         require(
             _tokenMeta[_tokenId].price <= msg.value,
-            "Bid price must be greater than or equal to the selling price"
+            "price >= to selling price"
         );
 
         BidOrder memory bid = BidOrder(
@@ -47,16 +47,12 @@ contract NFTBid is
     function executeBidOrder(uint256 _tokenId, uint256 _bidOrderID)
         public
         nonReentrant onlyOwnerOfToken(_tokenId) tokenExists(_tokenId)
-    {        
-       // TokenMeta memory token = _tokenMeta[_tokenId];
-        
+    {
         safeTransferFrom(
             ownerOf(_tokenId),
             Bids[_tokenId][_bidOrderID].buyerAddress,
             _tokenId
         );
-        // address sendTo = token.currentOwner;
-        // payable(sendTo).transfer(msg.value);
         payable(msg.sender).transfer(Bids[_tokenId][_bidOrderID].price);
 
         _tokenMeta[_tokenId].previousOwner = _tokenMeta[_tokenId].currentOwner;
@@ -72,11 +68,11 @@ contract NFTBid is
     }
 
   function withdrawBidMoney(uint _tokenId, uint _bidId) public {
-        require(msg.sender != _tokenMeta[_tokenId].currentOwner, "Only Bidder other than the owner are allowed to withdraw money");
+        require(msg.sender != _tokenMeta[_tokenId].currentOwner, "Owner can't withdraw");
         // BidOrder[] memory bids = Bids[_tokenId];
 
-        require(Bids[_tokenId][_bidId].buyerAddress == msg.sender, "Only the Bidder of that specific Bid can withdraw back his funds");
-        require(Bids[_tokenId][_bidId].withdrawn == false," You have already Withdrawn");
+        require(Bids[_tokenId][_bidId].buyerAddress == msg.sender, "Bidder can only withdraw");
+        require(Bids[_tokenId][_bidId].withdrawn == false,"Withdrawn");
         if (payable(msg.sender).send(Bids[_tokenId][_bidId].price)){
             Bids[_tokenId][_bidId].withdrawn = true;
         }
