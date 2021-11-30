@@ -10,15 +10,15 @@ contract NFTBid is
     event BidOrderReturn(BidOrder bid);
     event BidExecuted(uint256 price);
 
-    function getAll_NFTBids(uint256 _tokenId)
-        public
-        view
-        virtual
-        returns (BidOrder[] memory)
-    {
-        require(_exists(_tokenId));
-        return Bids[_tokenId];
-    }
+    // function getAll_NFTBids(uint256 _tokenId)
+    //     public
+    //     view
+    //     virtual
+    //     returns (BidOrder[] memory)
+    // {
+    //     require(_exists(_tokenId));
+    //     return Bids[_tokenId];
+    // }
 
     
     function Bid(uint256 _tokenId) public payable tokenExists(_tokenId){        
