@@ -80,16 +80,5 @@ contract NFTBid is
             revert("No Money left!");
         }
 
-        //  if(!payable(msg.sender).send(Bids[_tokenId][_bidId].price) ){
-        //     revert("Cannot withdraw, try again later");
-        // } 
-        
-        // for (uint256 i = 0; i < bids.length; i++) {
-        //     if(bids[i].buyerAddress == msg.sender){
-        //         if (!payable(bids[i].buyerAddress).send(bids[i].price)) {
-        //             revert("Cannot withdraw, try again later");
-        //         }   
-        //     }
-        // }
-    }
+          }
 }

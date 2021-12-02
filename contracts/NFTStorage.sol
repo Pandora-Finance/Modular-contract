@@ -41,8 +41,6 @@ contract NFTV1Storage is NFTAdminStorage {
 
     mapping(uint256 => BidOrder[]) public Bids;
 
-    TokenMeta[] allTheTokensOnSale;
-
     string baseURI;
 }
 

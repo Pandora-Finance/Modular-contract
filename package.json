@@ -16,6 +16,7 @@
     "@openzeppelin/contracts": "^4.3.3",
     "@openzeppelin/contracts-upgradeable": "^4.3.3",
     "@openzeppelin/truffle-upgrades": "^1.11.0",
+    "truffle-contract-size": "^2.0.1",
     "truffle-hdwallet-provider": "^1.0.17"
   }
 }

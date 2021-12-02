@@ -15,10 +15,7 @@ contract NFTMarketplace is
     function initialize() public initializer {
         OwnableUpgradeable.__Ownable_init();
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
-        ERC721Upgradeable.__ERC721_init("NFTMarketPlace", "NFTMRKT");
-        setBaseURI(
-            ""
-        );
+        ERC721Upgradeable.__ERC721_init("NFTMarketPlace", "NFTMRKT");       
     }
 
     event TokenMetaReturn(TokenMeta data, uint256 id);
@@ -33,14 +30,7 @@ contract NFTMarketplace is
       _;
    }
 
-    function fetchBaseURI() internal view virtual returns (string memory) {
-        return baseURI;
-    }
-
-    function setBaseURI(string memory _newBaseURI) public virtual onlyOwner {
-        baseURI = _newBaseURI;
-    }
-
+   
     function getContractBalance() public view returns (uint256) {
         return address(this).balance;
     }
