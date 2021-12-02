@@ -83,10 +83,6 @@ contract NFTMarketplace is
         _tokenMeta[_tokenId].price = _price;
     }
 
-     function _setTokenMeta(uint256 _tokenId, TokenMeta memory _meta) private onlyOwnerOfToken(_tokenId) tokenExists(_tokenId) {             
-        _tokenMeta[_tokenId] = _meta;
-    }
-
      function mintNFT(
         string memory _tokenURI,
         string memory _name,
@@ -96,11 +92,10 @@ contract NFTMarketplace is
 
         _tokenIds+=1;
 
-        uint256 newItemId = _tokenIds;
-        _mint(msg.sender, newItemId);
+        _mint(msg.sender, _tokenIds);
 
         TokenMeta memory meta = TokenMeta(
-            newItemId,
+            _tokenIds,
             _price,
             _name,
             _tokenURI,
@@ -112,11 +107,11 @@ contract NFTMarketplace is
             _msgSender(),
             0
         );
-        _setTokenMeta(newItemId, meta);
+        _tokenMeta[_tokenIds] = meta;
 
-        emit TokenMetaReturn(meta, newItemId);
+        emit TokenMetaReturn(meta, _tokenIds);
 
-        return newItemId;
+        return _tokenIds;
     }
 
     

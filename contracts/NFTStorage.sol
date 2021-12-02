@@ -37,6 +37,7 @@ contract NFTV1Storage is NFTAdminStorage {
         address buyerAddress;
         uint256 price;
         bool withdrawn;
+        uint256 transferCount;
     }
 
     mapping(uint256 => BidOrder[]) public Bids;

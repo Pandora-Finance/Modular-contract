@@ -26,7 +26,8 @@ contract NFTBid is
             ownerOf(_tokenId),
             msg.sender,
             msg.value,
-            false
+            false,
+            _tokenMeta[_tokenId].numberOfTransfers
         );
         Bids[_tokenId].push(bid);
         // Bids[_tokenId].push(BidOrder(_tokenId, _sellerAddress, _buyerAddress, _bidPrice));
