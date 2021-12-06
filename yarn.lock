@@ -3796,7 +3796,11 @@
   dependencies:
     "restore-cursor" "^3.1.0"
 
-<<<<<<< HEAD
+"cli-spinners@^2.0.0":
+  "integrity" "sha512-x/5fWmGMnbKQAaNwN+UZlV79qBLM9JFnJuJ03gIi5whrob0xV0ofNVHy9DhwGdsMJQc2OKv0oGmLzvaqvAVv+g=="
+  "resolved" "https://registry.npmjs.org/cli-spinners/-/cli-spinners-2.6.1.tgz"
+  "version" "2.6.1"
+
 "cli-table@^0.3.1":
   "integrity" "sha512-7eA6hFtAZwVx3dWAGoaBqTrzWko5jRUFKpHT64ZHkJpaA3y5wf5NlLjguqTRmqycatJZiwftODYYyGNLbQ7MuA=="
   "resolved" "https://registry.npmjs.org/cli-table/-/cli-table-0.3.9.tgz"
@@ -3804,11 +3808,6 @@
   dependencies:
     "colors" "1.0.3"
     "strip-ansi" "^6.0.1"
-=======
-"cli-spinners@^2.0.0":
-  "integrity" "sha512-x/5fWmGMnbKQAaNwN+UZlV79qBLM9JFnJuJ03gIi5whrob0xV0ofNVHy9DhwGdsMJQc2OKv0oGmLzvaqvAVv+g=="
-  "resolved" "https://registry.npmjs.org/cli-spinners/-/cli-spinners-2.6.1.tgz"
-  "version" "2.6.1"
 
 "cliui@^3.2.0":
   "integrity" "sha1-EgYBU3qRbSmUD5NNo7SNWFo5IT0="
@@ -3818,7 +3817,6 @@
     "string-width" "^1.0.1"
     "strip-ansi" "^3.0.1"
     "wrap-ansi" "^2.0.0"
->>>>>>> 2e0df0855e48500817d4013d5a13c5fe842f63ef
 
 "cliui@^5.0.0":
   "integrity" "sha512-PYeGSEmmHM6zvoef2w8TPzlrnNpXIjTipYK780YswmIP9vjxmd6Y2a3CB2Ks6/AU8NHjZugXvo8w3oWM2qnwXA=="
@@ -3838,14 +3836,11 @@
     "strip-ansi" "^6.0.0"
     "wrap-ansi" "^6.2.0"
 
-<<<<<<< HEAD
-=======
 "clone-buffer@1.0.0":
   "integrity" "sha1-4+JbIHrE5wGvch4staFnksrD3Fg="
   "resolved" "https://registry.npmjs.org/clone-buffer/-/clone-buffer-1.0.0.tgz"
   "version" "1.0.0"
 
->>>>>>> 2e0df0855e48500817d4013d5a13c5fe842f63ef
 "clone-response@^1.0.2":
   "integrity" "sha1-0dyXOSAxTfZ/vrlCI7TuNQI56Ws="
   "resolved" "https://registry.npmjs.org/clone-response/-/clone-response-1.0.2.tgz"
@@ -8673,11 +8668,7 @@
   dependencies:
     "p-try" "^2.0.0"
 
-<<<<<<< HEAD
-"p-limit@^3.0.2":
-=======
 "p-limit@^3.0.2", "p-limit@3.1.0":
->>>>>>> 2e0df0855e48500817d4013d5a13c5fe842f63ef
   "integrity" "sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ=="
   "resolved" "https://registry.npmjs.org/p-limit/-/p-limit-3.1.0.tgz"
   "version" "3.1.0"
@@ -12305,8 +12296,6 @@
     "camelcase" "^5.0.0"
     "decamelize" "^1.2.0"
 
-<<<<<<< HEAD
-=======
 "yargs-parser@^2.4.0":
   "integrity" "sha1-hVaN488VD/SfpRgl8DqMiA3cxcQ="
   "resolved" "https://registry.npmjs.org/yargs-parser/-/yargs-parser-2.4.1.tgz"
@@ -12315,7 +12304,6 @@
     "camelcase" "^3.0.0"
     "lodash.assign" "^4.0.6"
 
->>>>>>> 2e0df0855e48500817d4013d5a13c5fe842f63ef
 "yargs-unparser@1.6.1":
   "integrity" "sha512-qZV14lK9MWsGCmcr7u5oXGH0dbGqZAIxTDrWXZDo5zUr6b6iUmelNKO6x6R1dQT24AH3LgRxJpr8meWy2unolA=="
   "resolved" "https://registry.npmjs.org/yargs-unparser/-/yargs-unparser-1.6.1.tgz"
