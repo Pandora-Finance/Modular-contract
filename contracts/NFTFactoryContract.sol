@@ -43,6 +43,8 @@ contract NFTFactoryContract is
         LibMeta.transfer(_tokenMeta[tokenId], to);        
     }
 
+// Change in BuyNFT LibMeta Function
+
     function BuyNFT(uint256 _tokenId) public payable nonReentrant {
         require(msg.sender != address(0) && msg.sender != ownerOf(_tokenId));
         require(_tokenMeta[_tokenId].bidSale == false);
