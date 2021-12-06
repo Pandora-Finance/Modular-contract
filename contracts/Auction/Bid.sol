@@ -81,5 +81,6 @@ contract NFTBid is
             revert("No Money left!");
         }
 
-          }
+      
+    }
 }
