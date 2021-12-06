@@ -36,6 +36,13 @@ contract NFTFactoryContract is
         _;
     }
 
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
+        internal virtual override
+    {
+        super._beforeTokenTransfer(from, to, tokenId);
+        LibMeta.transfer(_tokenMeta[tokenId], to);        
+    }
+
     function BuyNFT(uint256 _tokenId) public payable nonReentrant {
         require(msg.sender != address(0) && msg.sender != ownerOf(_tokenId));
         require(_tokenMeta[_tokenId].bidSale == false);
@@ -43,7 +50,7 @@ contract NFTFactoryContract is
 
         payable(ownerOf(_tokenId)).transfer(msg.value);
         _transfer(ownerOf(_tokenId), payable(msg.sender), _tokenId);
-        LibMeta.transfer(_tokenMeta[_tokenId]);
+        LibMeta.transfer(_tokenMeta[_tokenId],msg.sender);
     }
 
     function SellNFT(uint256 _tokenId, uint256 _price)

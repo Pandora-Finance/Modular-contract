@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "../NFTFactoryContract.sol";
 import "../Libraries/LibBid.sol";
+import "../Libraries/LibMeta.sol";
 
 contract NFTBid is NFTFactoryContract {
     event BidOrderReturn(LibBid.BidOrder bid);
