@@ -11,13 +11,18 @@ import "./Libraries/LibShare.sol";
 contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
+    struct RoyaltiesSet {
+        bool set;
+        LibShare.Share[] royalties;
+    }
+
     event RoyaltiesSetForCollection(LibShare.Share[] royalties);
     event RoyaltiesSetForTokenId(uint256 tokenId, LibShare.Share[] royalties);
 
     Counters.Counter private _tokenIdCounter;
 
     LibShare.Share[] public collectionRoyalties;
-    mapping(uint256 => LibShare.Share[]) public royaltiesByTokenId;
+    mapping(uint256 => RoyaltiesSet) public royaltiesByTokenId;
 
     constructor(
         string memory name,
@@ -30,22 +35,23 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function safeMint(
         address to,
         string memory uri,
-        LibShare.Share[] memory royalties
+        RoyaltiesSet memory royaltiesSet
     ) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        setRoyaltiesByTokenId(tokenId, royalties);
+        setRoyaltiesByTokenId(tokenId, royaltiesSet);
     }
 
     function setRoyaltiesByTokenId(
         uint256 _tokenId,
-        LibShare.Share[] memory royalties
+        RoyaltiesSet memory royaltiesSet
     ) public onlyOwner {
         delete royaltiesByTokenId[_tokenId];
-        _setRoyaltiesArray(royaltiesByTokenId[_tokenId], royalties);
-        emit RoyaltiesSetForTokenId(_tokenId, royalties);
+        royaltiesByTokenId[_tokenId].set = royaltiesSet.set;
+        _setRoyaltiesArray(royaltiesByTokenId[_tokenId].royalties, royaltiesSet.royalties);
+        emit RoyaltiesSetForTokenId(_tokenId, royaltiesSet.royalties);
     }
 
     function setRoyaltiesForCollection(LibShare.Share[] memory royalties)
@@ -62,8 +68,8 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         view
         returns (LibShare.Share[] memory)
     {
-        if (royaltiesByTokenId[_tokenId].length != 0) {
-            return royaltiesByTokenId[_tokenId];
+        if (royaltiesByTokenId[_tokenId].set) {
+            return royaltiesByTokenId[_tokenId].royalties;
         }
         return collectionRoyalties;
     }
