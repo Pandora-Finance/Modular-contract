@@ -21,5 +21,7 @@ library LibMeta {
         token.previousOwner = token.currentOwner;
         token.currentOwner = _to;
         token.numberOfTransfers += 1;
+        token.directSale = false ;
+        token.bidSale = false ;
     } 
 }
