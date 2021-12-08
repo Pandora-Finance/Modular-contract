@@ -24,13 +24,9 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     LibShare.Share[] public collectionRoyalties;
     mapping(uint256 => RoyaltiesSet) public royaltiesByTokenId;
 
-    constructor(
-        string memory name,
-        string memory symbol,
-        LibShare.Share[] memory royalties
-    ) ERC721(name, symbol) {
-        setRoyaltiesForCollection(royalties);
-    }
+    constructor(string memory name, string memory symbol)
+        ERC721(name, symbol)
+    {}
 
     function safeMint(
         address to,
@@ -42,6 +38,21 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
         setRoyaltiesByTokenId(tokenId, royaltiesSet);
+    }
+
+    function batchMint(
+        uint256 _totalNft,
+        string[] memory _uri,
+        RoyaltiesSet memory royaltiesSet
+    ) external {
+        require(_totalNft <= 15, "Minting more than 15 Nfts are not allowe");
+        require(
+            _totalNft == _uri.length,
+            "uri array length should be equal to _totalNFT"
+        );
+        for (uint256 i = 0; i < _totalNft; i++) {
+            safeMint(msg.sender, _uri[i], royaltiesSet);
+        }
     }
 
     function setRoyaltiesByTokenId(

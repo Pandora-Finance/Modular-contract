@@ -9,7 +9,8 @@ library LibERC721 {
         external
         returns (address)
     {
-        TokenERC721 token = new TokenERC721(name, symbol, royalties);
+        TokenERC721 token = new TokenERC721(name, symbol);
+        token.setRoyaltiesForCollection(royalties);
         token.transferOwnership(msg.sender);
         return address(token);
     }
