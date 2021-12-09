@@ -38,32 +38,6 @@ contract("NFTBid", (accounts) => {
   });
 
 
-
-
-
-
-//   it("Testing smart contract function Bid() that enable bidding for NFT to sell", async () => {
-//     const instance = await NFTBid.deployed();
-
-//     let result = await instance.Bid(1, { from: accounts[1], value: 7000000 });
-//     let result2 = await instance.Bid(1, { from: accounts[2], value: 8000000 });
-
-//     assert.equal(result.receipt.status, true, "Failed to place a bid order no 1");
-//     assert.equal(result2.receipt.status, true, "Failed to place a bid order no 2");
-//   });
-
-//   it("Testing smart contract function executeBidOrder() that enables owner of NFT to execute the bid order", async () => {
-//     const instance = await NFTBid.deployed();
-
-//     let result = await instance.executeBidOrder(1, 0);
-
-//     assert.equal(
-//       result.receipt.logs[1].event,
-//       "Transfer",
-//       "NFT Transfer Failed"
-//     );
-//   });
-
  })
  
 });
