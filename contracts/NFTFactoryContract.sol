@@ -6,6 +6,7 @@ import "./Libraries/LibMeta.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "./TokenERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract NFTFactoryContract is
@@ -16,6 +17,8 @@ contract NFTFactoryContract is
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdTracker;
+
+    address contractAddress = address(this);
 
     function initialize() public initializer {
         OwnableUpgradeable.__Ownable_init();
@@ -31,8 +34,8 @@ contract NFTFactoryContract is
         _;
     }
 
-    modifier tokenExists(uint256 _tokenID) {
-        require(_exists(_tokenID));
+    modifier onlyOwnerOfCollectionToken(address _collectionAddress, uint256 _tokenId) {
+        require(msg.sender == TokenERC721(_collectionAddress).ownerOf(_tokenId));
         _;
     }
 
@@ -46,42 +49,71 @@ contract NFTFactoryContract is
 // Change in BuyNFT LibMeta Function
 
     function BuyNFT(uint256 _tokenId) public payable nonReentrant {
-        require(msg.sender != address(0) && msg.sender != ownerOf(_tokenId));
-        require(_tokenMeta[_tokenId].bidSale == false);
-        require(msg.value >= _tokenMeta[_tokenId].price, "Price >= nft price");
+        LibMeta.TokenMeta memory meta = _tokenMeta[_tokenId];
+        require(msg.sender != address(0) && msg.sender != meta.currentOwner);
+        require(meta.bidSale == false);
+        require(msg.value >= meta.price, "Price >= nft price");
 
-        payable(ownerOf(_tokenId)).transfer(msg.value);
-        _transfer(ownerOf(_tokenId), payable(msg.sender), _tokenId);
+        payable(meta.currentOwner).transfer(msg.value);
+        _transfer(meta.currentOwner, payable(msg.sender), _tokenId);
         LibMeta.transfer(_tokenMeta[_tokenId],msg.sender);
     }
 
     function SellNFT(uint256 _tokenId, uint256 _price)
         public
         onlyOwnerOfToken(_tokenId)
-        tokenExists(_tokenId)
-    {
+    {   
+        require(_price > 0);
         _tokenMeta[_tokenId].bidSale = false;
         _tokenMeta[_tokenId].directSale = true;
         _tokenMeta[_tokenId].price = _price;
     }
 
+    function sellNFT(address _contractAddress, uint256 _tokenId, uint256 _price) 
+    public 
+    onlyOwnerOfCollectionToken(_contractAddress, _tokenId)
+    {
+        _tokenIdTracker.increment();
+
+        string memory tokenUri = TokenERC721(_contractAddress).tokenURI(_tokenId);
+
+        LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
+            _contractAddress,
+            _tokenId,
+            _price,
+            "",
+            tokenUri,
+            true,
+            false,
+            false,
+            collectionToOwner[_contractAddress],
+            _msgSender(),
+            _msgSender(),
+            0
+        );
+
+         _tokenMeta[_tokenIdTracker.current()] = meta;
+
+        emit TokenMetaReturn(meta, _tokenIdTracker.current());
+
+    }
+
     function mintNFT(
         string memory _tokenURI,
-        string memory _name,
-        uint256 _price
+        string memory _name
     ) public returns (uint256) {
-        require(_price > 0);
 
         _tokenIdTracker.increment();
 
         _mint(msg.sender, _tokenIdTracker.current());
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
+            contractAddress,
             _tokenIdTracker.current(),
-            _price,
+            0,
             _name,
             _tokenURI,
-            true,
+            false,
             false,
             false,
             _msgSender(),
@@ -96,12 +128,12 @@ contract NFTFactoryContract is
         return _tokenIdTracker.current();
     }
 
-    function batchMint(uint _totalNFT, string[] memory _name, string[] memory _tokenURI, uint[] memory _price) external nonReentrant returns (bool) {
+    function batchMint(uint _totalNFT, string[] memory _name, string[] memory _tokenURI) external nonReentrant returns (bool) {
         require(_totalNFT <= 15, "15 or less allowed");
         require(_name.length == _tokenURI.length, "Total Uri and TotalNft does not match");
 
          for(uint i = 0; i< _totalNFT; i++) {
-            mintNFT(_tokenURI[i], _name[i], _price[i]);
+            mintNFT(_tokenURI[i], _name[i]);
         }
         emit BatchMint(_totalNFT, "Batch mint success");
         return true;

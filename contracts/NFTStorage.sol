@@ -11,6 +11,8 @@ contract NFTV1Storage {
     mapping(uint256 => LibBid.BidOrder[]) public Bids;
     string baseURI;
     mapping(uint256 => address) public collections;
+    mapping(address => address) public collectionToOwner;
+    mapping(address => address[]) public ownerToCollections;
     
 }
 

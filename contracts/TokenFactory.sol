@@ -28,6 +28,8 @@ contract TokenFactory is OwnableUpgradeable, UUPSUpgradeable, NFTV1Storage {
         address collectionAddress = LibERC721.deployERC721(name, symbol, royalties);
         collections[collectionIdTracker.current()] = collectionAddress;
         
+        ownerToCollections[msg.sender].push(collectionAddress);
+
         emit ERC721Deployed(msg.sender, collectionAddress);
     }
 

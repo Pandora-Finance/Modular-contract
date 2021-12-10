@@ -9,7 +9,7 @@ contract NFTBid is NFTFactoryContract {
     event BidOrderReturn(LibBid.BidOrder bid);
     event BidExecuted(uint256 price);
 
-    function Bid(uint256 _tokenId) public payable tokenExists(_tokenId) {
+    function Bid(uint256 _tokenId) public payable {
         require(ownerOf(_tokenId) != _msgSender(), "Owners Can't Bid");
         require(_tokenMeta[_tokenId].status == true, "NFT not open for sale");
         require(
@@ -34,7 +34,6 @@ contract NFTBid is NFTFactoryContract {
     function SellNFT_byBid(uint256 _tokenId, uint256 _price)
         public
         onlyOwnerOfToken(_tokenId)
-        tokenExists(_tokenId)
     {
         _tokenMeta[_tokenId].directSale = false;
         _tokenMeta[_tokenId].bidSale = true;
@@ -46,7 +45,6 @@ contract NFTBid is NFTFactoryContract {
         public
         nonReentrant
         onlyOwnerOfToken(_tokenId)
-        tokenExists(_tokenId)
     {
         safeTransferFrom(
             ownerOf(_tokenId),
