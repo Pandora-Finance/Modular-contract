@@ -3,6 +3,7 @@ pragma solidity ^0.8.2;
 
 import "./Libraries/LibShare.sol";
 import "./Libraries/LibERC721.sol";
+import "./Libraries/LibCollection.sol";
 import "./NFTStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -21,14 +22,25 @@ contract TokenFactory is OwnableUpgradeable, UUPSUpgradeable, NFTV1Storage {
         __UUPSUpgradeable_init();
     }
 
-    function deployERC721(string memory name, string memory symbol, LibShare.Share[] memory royalties) external {
+    function deployERC721(string memory name, string memory symbol, string memory description, LibShare.Share[] memory royalties) external {
 
         collectionIdTracker.increment();
 
         address collectionAddress = LibERC721.deployERC721(name, symbol, royalties);
-        collections[collectionIdTracker.current()] = collectionAddress;
+        
+        LibCollection.CollectionMeta memory meta = LibCollection.CollectionMeta(
+            collectionIdTracker.current(),
+            name,
+            symbol,
+            collectionAddress,
+            msg.sender,
+            description
+        );
+
+        collections[collectionIdTracker.current()] = meta;
         
         ownerToCollections[msg.sender].push(collectionAddress);
+        collectionToOwner[collectionAddress] = msg.sender;
 
         emit ERC721Deployed(msg.sender, collectionAddress);
     }

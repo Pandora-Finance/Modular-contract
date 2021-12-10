@@ -6,14 +6,16 @@ import "./Libraries/LibMeta.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
 import "./TokenERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract NFTFactoryContract is
-    NFTV1Storage,
     ERC721Upgradeable,
+    NFTV1Storage,
     OwnableUpgradeable,
-    ReentrancyGuardUpgradeable
+    ReentrancyGuardUpgradeable,
+    ERC721HolderUpgradeable
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdTracker;
@@ -55,7 +57,12 @@ contract NFTFactoryContract is
         require(msg.value >= meta.price, "Price >= nft price");
 
         payable(meta.currentOwner).transfer(msg.value);
-        _transfer(meta.currentOwner, payable(msg.sender), _tokenId);
+        if(meta.collectionAddress == contractAddress) {
+            _transfer(contractAddress, payable(msg.sender), _tokenId);
+        }
+        else {
+            IERC721(meta.collectionAddress).safeTransferFrom(contractAddress, payable(msg.sender), _tokenId);
+        }
         LibMeta.transfer(_tokenMeta[_tokenId],msg.sender);
 
     }
@@ -65,6 +72,10 @@ contract NFTFactoryContract is
         onlyOwnerOfToken(_tokenId)
     {   
         require(_price > 0);
+
+        //Needs approval on frontend
+        safeTransferFrom(msg.sender, contractAddress, _tokenId);
+
         _tokenMeta[_tokenId].bidSale = false;
         _tokenMeta[_tokenId].directSale = true;
         _tokenMeta[_tokenId].price = _price;
@@ -77,6 +88,9 @@ contract NFTFactoryContract is
         _tokenIdTracker.increment();
 
         string memory tokenUri = TokenERC721(_contractAddress).tokenURI(_tokenId);
+
+        //needs approval on frontend
+        TokenERC721(_contractAddress).safeTransferFrom(msg.sender, contractAddress, _tokenId);
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
             _contractAddress,

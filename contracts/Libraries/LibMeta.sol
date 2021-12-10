@@ -18,7 +18,7 @@ library LibMeta {
         uint256 numberOfTransfers;
     }
 
-    function transfer(TokenMeta storage token, address _to ) public{
+    function transfer(TokenMeta memory token, address _to ) public pure{
         token.previousOwner = token.currentOwner;
         token.currentOwner = _to;
         token.numberOfTransfers += 1;
