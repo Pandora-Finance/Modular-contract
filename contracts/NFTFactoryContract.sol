@@ -57,6 +57,7 @@ contract NFTFactoryContract is
         payable(meta.currentOwner).transfer(msg.value);
         _transfer(meta.currentOwner, payable(msg.sender), _tokenId);
         LibMeta.transfer(_tokenMeta[_tokenId],msg.sender);
+
     }
 
     function SellNFT(uint256 _tokenId, uint256 _price)
