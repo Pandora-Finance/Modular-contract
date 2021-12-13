@@ -27,7 +27,7 @@ contract TokenFactory is OwnableUpgradeable, UUPSUpgradeable, NFTV1Storage {
         collectionIdTracker.increment();
 
         address collectionAddress = LibERC721.deployERC721(name, symbol, royalties);
-        
+
         LibCollection.CollectionMeta memory meta = LibCollection.CollectionMeta(
             collectionIdTracker.current(),
             name,
@@ -39,7 +39,8 @@ contract TokenFactory is OwnableUpgradeable, UUPSUpgradeable, NFTV1Storage {
 
         collections[collectionIdTracker.current()] = meta;
         
-        ownerToCollections[msg.sender].push(collectionAddress);
+
+        ownerToCollections[msg.sender].push(collectionIdTracker.current());
         collectionToOwner[collectionAddress] = msg.sender;
 
         emit ERC721Deployed(msg.sender, collectionAddress);

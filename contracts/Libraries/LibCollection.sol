@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./LibShare.sol";
-
 library LibCollection {
 
     struct CollectionMeta {
@@ -13,5 +11,6 @@ library LibCollection {
         address owner;
         string description;
     }
+
 
 }

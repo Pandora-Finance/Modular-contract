@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "./NFTStorage.sol";
-import "./Libraries/LibMeta.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
@@ -81,19 +80,19 @@ contract NFTFactoryContract is
         _tokenMeta[_tokenId].price = _price;
     }
 
-    function sellNFT(address _contractAddress, uint256 _tokenId, uint256 _price) 
+    function sellNFT(address _collectionAddress, uint256 _tokenId, uint256 _price) 
     public 
-    onlyOwnerOfCollectionToken(_contractAddress, _tokenId)
+    onlyOwnerOfCollectionToken(_collectionAddress, _tokenId)
     {
         _tokenIdTracker.increment();
 
-        string memory tokenUri = TokenERC721(_contractAddress).tokenURI(_tokenId);
+        string memory tokenUri = TokenERC721(_collectionAddress).tokenURI(_tokenId);
 
         //needs approval on frontend
-        TokenERC721(_contractAddress).safeTransferFrom(msg.sender, contractAddress, _tokenId);
+        TokenERC721(_collectionAddress).safeTransferFrom(msg.sender, contractAddress, _tokenId);
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
-            _contractAddress,
+            _collectionAddress,
             _tokenId,
             _price,
             "",
@@ -101,7 +100,7 @@ contract NFTFactoryContract is
             true,
             false,
             false,
-            collectionToOwner[_contractAddress],
+            TokenERC721(_collectionAddress).ownerOf(_tokenId),
             _msgSender(),
             _msgSender(),
             0
