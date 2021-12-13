@@ -142,14 +142,4 @@ contract NFTFactoryContract is
         return _tokenIdTracker.current();
     }
 
-    function batchMint(uint _totalNFT, string[] memory _name, string[] memory _tokenURI) external nonReentrant returns (bool) {
-        require(_totalNFT <= 15, "15 or less allowed");
-        require(_name.length == _tokenURI.length, "Total Uri and TotalNft does not match");
-
-         for(uint i = 0; i< _totalNFT; i++) {
-            mintNFT(_tokenURI[i], _name[i]);
-        }
-        emit BatchMint(_totalNFT, "Batch mint success");
-        return true;
-    }
 }
