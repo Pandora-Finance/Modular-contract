@@ -9,75 +9,74 @@ contract NFTBid is NFTFactoryContract {
     event BidOrderReturn(LibBid.BidOrder bid);
     event BidExecuted(uint256 price);
 
-    function Bid(uint256 _tokenId) public payable {
-        require(ownerOf(_tokenId) != _msgSender(), "Owners Can't Bid");
-        require(_tokenMeta[_tokenId].status == true, "NFT not open for sale");
+    function Bid(uint256 _saleId) public payable {
+        require(_tokenMeta[_saleId].currentOwner != _msgSender(), "Owners Can't Bid");
+        require(_tokenMeta[_saleId].status == true, "NFT not open for sale");
         require(
-            _tokenMeta[_tokenId].price <= msg.value,
+            _tokenMeta[_saleId].price <= msg.value,
             "price >= to selling price"
         );
 
         LibBid.BidOrder memory bid = LibBid.BidOrder(
-            _tokenId,
-            ownerOf(_tokenId),
+            _saleId,
+            _tokenMeta[_saleId].currentOwner,
             msg.sender,
             msg.value,
-            false,
-            _tokenMeta[_tokenId].numberOfTransfers
+            false
         );
-        Bids[_tokenId].push(bid);
+        Bids[_saleId].push(bid);
         // Bids[_tokenId].push(BidOrder(_tokenId, _sellerAddress, _buyerAddress, _bidPrice));
 
         emit BidOrderReturn(bid);
     }
 
-    function SellNFT_byBid(uint256 _tokenId, uint256 _price)
+    function SellNFT_byBid(uint256 _saleId, uint256 _price)
         public
-        onlyOwnerOfToken(_tokenId)
     {
-        _tokenMeta[_tokenId].directSale = false;
-        _tokenMeta[_tokenId].bidSale = true;
-        _tokenMeta[_tokenId].price = _price;
-        _tokenMeta[_tokenId].status = true;
+        require(msg.sender == _tokenMeta[_saleId].currentOwner);
+
+        _tokenMeta[_saleId].directSale = false;
+        _tokenMeta[_saleId].bidSale = true;
+        _tokenMeta[_saleId].price = _price;
+        _tokenMeta[_saleId].status = true;
     }
 
-    function executeBidOrder(uint256 _tokenId, uint256 _bidOrderID)
+    function executeBidOrder(uint256 _saleId, uint256 _bidOrderID)
         public
         nonReentrant
-        onlyOwnerOfToken(_tokenId)
     {
-        safeTransferFrom(
-            ownerOf(_tokenId),
-            Bids[_tokenId][_bidOrderID].buyerAddress,
-            _tokenId
+         require(msg.sender == _tokenMeta[_saleId].currentOwner);
+
+        ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
+            address(this),
+            Bids[_saleId][_bidOrderID].buyerAddress,
+            _tokenMeta[_saleId].tokenId
         );
-        payable(msg.sender).transfer(Bids[_tokenId][_bidOrderID].price);
+        payable(msg.sender).transfer(Bids[_saleId][_bidOrderID].price);
 
-        _tokenMeta[_tokenId].previousOwner = _tokenMeta[_tokenId].currentOwner;
-        _tokenMeta[_tokenId].currentOwner = Bids[_tokenId][_bidOrderID]
+        _tokenMeta[_saleId].currentOwner = Bids[_saleId][_bidOrderID]
             .buyerAddress;
-        _tokenMeta[_tokenId].numberOfTransfers += 1;
-        _tokenMeta[_tokenId].price = Bids[_tokenId][_bidOrderID].price;
-        _tokenMeta[_tokenId].bidSale = false;
-        _tokenMeta[_tokenId].status = false;
+        _tokenMeta[_saleId].price = Bids[_saleId][_bidOrderID].price;
+        _tokenMeta[_saleId].bidSale = false;
+        _tokenMeta[_saleId].status = false;
 
-        emit BidExecuted(Bids[_tokenId][_bidOrderID].price);
+        emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }
 
-    function withdrawBidMoney(uint256 _tokenId, uint256 _bidId) public {
+    function withdrawBidMoney(uint256 _saleId, uint256 _bidId) public {
         require(
-            msg.sender != _tokenMeta[_tokenId].currentOwner,
+            msg.sender != _tokenMeta[_saleId].currentOwner,
             "Owner can't withdraw"
         );
         // BidOrder[] memory bids = Bids[_tokenId];
 
         require(
-            Bids[_tokenId][_bidId].buyerAddress == msg.sender,
+            Bids[_saleId][_bidId].buyerAddress == msg.sender,
             "Bidder can only withdraw"
         );
-        require(Bids[_tokenId][_bidId].withdrawn == false, "Withdrawn");
-        if (payable(msg.sender).send(Bids[_tokenId][_bidId].price)) {
-            Bids[_tokenId][_bidId].withdrawn = true;
+        require(Bids[_saleId][_bidId].withdrawn == false, "Withdrawn");
+        if (payable(msg.sender).send(Bids[_saleId][_bidId].price)) {
+            Bids[_saleId][_bidId].withdrawn = true;
         } else {
             revert("No Money left!");
         }
