@@ -8,6 +8,7 @@ import "../Libraries/LibMeta.sol";
 contract NFTBid is NFTFactoryContract {
     event BidOrderReturn(LibBid.BidOrder bid);
     event BidExecuted(uint256 price);
+    event AuctionStarted(uint time);
 
     function Bid(uint256 _tokenId) public payable {
         require(ownerOf(_tokenId) != _msgSender(), "Owners Can't Bid");
@@ -16,6 +17,7 @@ contract NFTBid is NFTFactoryContract {
             _tokenMeta[_tokenId].price <= msg.value,
             "price >= to selling price"
         );
+        require(_timeOfAuction[_tokenId] >= block.timestamp,"Auction Over");
 
         LibBid.BidOrder memory bid = LibBid.BidOrder(
             _tokenId,
@@ -31,7 +33,7 @@ contract NFTBid is NFTFactoryContract {
         emit BidOrderReturn(bid);
     }
 
-    function SellNFT_byBid(uint256 _tokenId, uint256 _price)
+    function SellNFT_byBid(uint256 _tokenId, uint256 _price, uint timeOfAuction)
         public
         onlyOwnerOfToken(_tokenId)
     {
@@ -39,6 +41,9 @@ contract NFTBid is NFTFactoryContract {
         _tokenMeta[_tokenId].bidSale = true;
         _tokenMeta[_tokenId].price = _price;
         _tokenMeta[_tokenId].status = true;
+        _timeOfAuction[_tokenId] = block.timestamp + timeOfAuction ;
+        emit AuctionStarted(_timeOfAuction[_tokenId]);
+
     }
 
     function executeBidOrder(uint256 _tokenId, uint256 _bidOrderID)

@@ -1,6 +1,7 @@
 const NFTBid = artifacts.require("NFTBid");
 
 contract("NFTBid", (accounts) => {
+ describe("Testing Contracts Workflow", function(){  
   it("Testing smart contract function mintNFT() that mints NFT", async () => {
     const instance = await NFTBid.deployed();
 
@@ -95,4 +96,5 @@ contract("NFTBid", (accounts) => {
     );
     assert.equal(result.receipt.status, true, "Failed to mint");
   });
+ }); 
 });
