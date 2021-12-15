@@ -14,7 +14,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract NFTFactoryContract is
     NFTV1Storage,
     OwnableUpgradeable,
-    UUPSUpgradeable,
     ReentrancyGuardUpgradeable,
     ERC721HolderUpgradeable
 {
@@ -23,12 +22,10 @@ contract NFTFactoryContract is
 
     address internal PNDCAddress;
 
-    function initialize(address _address) initializer public {
+    function initialize() initializer public {
         OwnableUpgradeable.__Ownable_init();
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
         ERC721HolderUpgradeable.__ERC721Holder_init();
-        __UUPSUpgradeable_init();
-        PNDCAddress = _address;
     }
 
     event TokenMetaReturn(LibMeta.TokenMeta data, uint256 id);
@@ -101,11 +98,7 @@ contract NFTFactoryContract is
 
     }
 
-     function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyOwner
-    {}
+    
 
 
 }
