@@ -2,15 +2,15 @@
 pragma solidity ^0.8.0;
 
 import "./NFTStorage.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "./Libraries/LibShare.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
 import "./TokenERC721.sol";
+import "./PNDC_ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract NFTFactoryContract is
-    ERC721Upgradeable,
     NFTV1Storage,
     OwnableUpgradeable,
     ReentrancyGuardUpgradeable,
@@ -19,91 +19,56 @@ contract NFTFactoryContract is
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdTracker;
 
-    address contractAddress = address(this);
+    address PNDCAddress;
 
-    function initialize() public initializer {
+    function initialize(address _address) public initializer {
         OwnableUpgradeable.__Ownable_init();
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
-        ERC721Upgradeable.__ERC721_init("NFTFactoryContract", "NFTMRKT");
+        PNDCAddress = _address;
     }
 
     event TokenMetaReturn(LibMeta.TokenMeta data, uint256 id);
-    event BatchMint(uint256 _totalNft, string msg);
 
-    modifier onlyOwnerOfToken(uint256 _tokenID) {
-        require(msg.sender == ownerOf(_tokenID));
+    modifier onlyOwnerOfToken(address _collectionAddress, uint256 _tokenId) {
+        require(msg.sender == ERC721(_collectionAddress).ownerOf(_tokenId));
         _;
     }
 
-    modifier onlyOwnerOfCollectionToken(address _collectionAddress, uint256 _tokenId) {
-        require(msg.sender == TokenERC721(_collectionAddress).ownerOf(_tokenId));
-        _;
-    }
-
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
-        internal virtual override
-    {
-        super._beforeTokenTransfer(from, to, tokenId);
-        LibMeta.transfer(_tokenMeta[tokenId], to);        
-    }
 
 // Change in BuyNFT LibMeta Function
 
-    function BuyNFT(uint256 _tokenId) public payable nonReentrant {
-        LibMeta.TokenMeta memory meta = _tokenMeta[_tokenId];
+    function BuyNFT(uint256 _saleId) public payable nonReentrant {
+        LibMeta.TokenMeta memory meta = _tokenMeta[_saleId];
+        require(meta.status == true);
         require(msg.sender != address(0) && msg.sender != meta.currentOwner);
         require(meta.bidSale == false);
         require(msg.value >= meta.price, "Price >= nft price");
 
         payable(meta.currentOwner).transfer(msg.value);
-        if(meta.collectionAddress == contractAddress) {
-            _transfer(contractAddress, payable(msg.sender), _tokenId);
-        }
-        else {
-            IERC721(meta.collectionAddress).safeTransferFrom(contractAddress, payable(msg.sender), _tokenId);
-        }
-        LibMeta.transfer(_tokenMeta[_tokenId],msg.sender);
+        ERC721(meta.collectionAddress).safeTransferFrom(address(this), msg.sender, meta.tokenId);
+        LibMeta.transfer(_tokenMeta[_saleId],msg.sender);
 
-    }
-
-    function SellNFT(uint256 _tokenId, uint256 _price)
-        public
-        onlyOwnerOfToken(_tokenId)
-    {   
-        require(_price > 0);
-
-        //Needs approval on frontend
-        safeTransferFrom(msg.sender, contractAddress, _tokenId);
-
-        _tokenMeta[_tokenId].bidSale = false;
-        _tokenMeta[_tokenId].directSale = true;
-        _tokenMeta[_tokenId].price = _price;
     }
 
     function sellNFT(address _collectionAddress, uint256 _tokenId, uint256 _price) 
     public 
-    onlyOwnerOfCollectionToken(_collectionAddress, _tokenId)
+    onlyOwnerOfToken(_collectionAddress, _tokenId)
     {
         _tokenIdTracker.increment();
 
-        string memory tokenUri = TokenERC721(_collectionAddress).tokenURI(_tokenId);
-
         //needs approval on frontend
-        TokenERC721(_collectionAddress).safeTransferFrom(msg.sender, contractAddress, _tokenId);
+        ERC721(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId);
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
+            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _price,
-            "",
-            tokenUri,
             true,
             false,
-            false,
-            TokenERC721(_collectionAddress).ownerOf(_tokenId),
-            _msgSender(),
-            _msgSender(),
-            0
+            true,
+            ERC721(_collectionAddress).ownerOf(_tokenId),
+            _msgSender()
         );
 
          _tokenMeta[_tokenIdTracker.current()] = meta;
@@ -112,44 +77,5 @@ contract NFTFactoryContract is
 
     }
 
-    function mintNFT(
-        string memory _tokenURI,
-        string memory _name
-    ) public returns (uint256) {
 
-        _tokenIdTracker.increment();
-
-        _mint(msg.sender, _tokenIdTracker.current());
-
-        LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
-            contractAddress,
-            _tokenIdTracker.current(),
-            0,
-            _name,
-            _tokenURI,
-            false,
-            false,
-            false,
-            _msgSender(),
-            _msgSender(),
-            _msgSender(),
-            0
-        );
-        _tokenMeta[_tokenIdTracker.current()] = meta;
-
-        emit TokenMetaReturn(meta, _tokenIdTracker.current());
-
-        return _tokenIdTracker.current();
-    }
-
-    function batchMint(uint _totalNFT, string[] memory _name, string[] memory _tokenURI) external nonReentrant returns (bool) {
-        require(_totalNFT <= 15, "15 or less allowed");
-        require(_name.length == _tokenURI.length, "Total Uri and TotalNft does not match");
-
-         for(uint i = 0; i< _totalNFT; i++) {
-            mintNFT(_tokenURI[i], _name[i]);
-        }
-        emit BatchMint(_totalNFT, "Batch mint success");
-        return true;
-    }
 }
