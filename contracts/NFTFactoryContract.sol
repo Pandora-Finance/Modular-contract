@@ -6,6 +6,7 @@ import "./Libraries/LibShare.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./TokenERC721.sol";
 import "./PNDC_ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -13,17 +14,20 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract NFTFactoryContract is
     NFTV1Storage,
     OwnableUpgradeable,
+    UUPSUpgradeable,
     ReentrancyGuardUpgradeable,
     ERC721HolderUpgradeable
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdTracker;
 
-    address PNDCAddress;
+    address internal PNDCAddress;
 
-    function initialize(address _address) public initializer {
+    function initialize(address _address) initializer public {
         OwnableUpgradeable.__Ownable_init();
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
+        ERC721HolderUpgradeable.__ERC721Holder_init();
+        __UUPSUpgradeable_init();
         PNDCAddress = _address;
     }
 
@@ -39,12 +43,32 @@ contract NFTFactoryContract is
 
     function BuyNFT(uint256 _saleId) public payable nonReentrant {
         LibMeta.TokenMeta memory meta = _tokenMeta[_saleId];
+        
+        LibShare.Share[] memory royalties;
+
+        if(_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
+            royalties = PNDC_ERC721(PNDCAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+        }
+
+        else {
+            royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+        }
+
         require(meta.status == true);
         require(msg.sender != address(0) && msg.sender != meta.currentOwner);
         require(meta.bidSale == false);
         require(msg.value >= meta.price, "Price >= nft price");
 
-        payable(meta.currentOwner).transfer(msg.value);
+        uint sum = msg.value;
+
+        for(uint256 i = 0; i < royalties.length; i ++) {
+            uint256 amount = (royalties[i].value / 10000) * msg.value;
+            address payable receiver = royalties[i].account;
+            receiver.transfer(amount);
+            sum = sum - amount;
+        }
+
+        payable(meta.currentOwner).transfer(sum);
         ERC721(meta.collectionAddress).safeTransferFrom(address(this), msg.sender, meta.tokenId);
         LibMeta.transfer(_tokenMeta[_saleId],msg.sender);
 
@@ -76,6 +100,12 @@ contract NFTFactoryContract is
         emit TokenMetaReturn(meta, _tokenIdTracker.current());
 
     }
+
+     function _authorizeUpgrade(address newImplementation)
+        internal
+        override
+        onlyOwner
+    {}
 
 
 }

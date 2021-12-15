@@ -45,14 +45,34 @@ contract NFTBid is NFTFactoryContract {
         public
         nonReentrant
     {
-         require(msg.sender == _tokenMeta[_saleId].currentOwner);
+        require(msg.sender == _tokenMeta[_saleId].currentOwner);
+
+         LibShare.Share[] memory royalties;
+
+        if(_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
+            royalties = PNDC_ERC721(PNDCAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+        }
+
+        else {
+            royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+        }
 
         ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
             address(this),
             Bids[_saleId][_bidOrderID].buyerAddress,
             _tokenMeta[_saleId].tokenId
         );
-        payable(msg.sender).transfer(Bids[_saleId][_bidOrderID].price);
+
+         uint sum = Bids[_saleId][_bidOrderID].price;
+
+        for(uint256 i = 0; i < royalties.length; i ++) {
+            uint256 amount = (royalties[i].value / 10000) * Bids[_saleId][_bidOrderID].price;
+            address payable receiver = royalties[i].account;
+            receiver.transfer(amount);
+            sum = sum - amount;
+        }
+
+        payable(msg.sender).transfer(sum);
 
         _tokenMeta[_saleId].currentOwner = Bids[_saleId][_bidOrderID]
             .buyerAddress;
