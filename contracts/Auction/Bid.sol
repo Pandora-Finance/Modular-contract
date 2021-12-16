@@ -17,7 +17,7 @@ contract NFTBid is NFTFactoryContract {
             _tokenMeta[_saleId].price <= msg.value,
             "price >= to selling price"
         );
-         require(_timeOfAuction[_saleId] >= block.timestamp,"Auction Over");
+        //  require(_timeOfAuction[_saleId] >= block.timestamp,"Auction Over");
 
         LibBid.BidOrder memory bid = LibBid.BidOrder(
             _saleId,
@@ -32,7 +32,7 @@ contract NFTBid is NFTFactoryContract {
         emit BidOrderReturn(bid);
     }
 
-    function SellNFT_byBid(uint256 _saleId, uint256 _price, uint256 timeOfAuction)
+    function SellNFT_byBid(uint256 _saleId, uint256 _price)
         public
     {
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
@@ -41,22 +41,42 @@ contract NFTBid is NFTFactoryContract {
         _tokenMeta[_saleId].bidSale = true;
         _tokenMeta[_saleId].price = _price;
         _tokenMeta[_saleId].status = true;
-        _timeOfAuction[_saleId] = block.timestamp + timeOfAuction ;
-        emit AuctionStarted(_timeOfAuction[_saleId]);
+        // _timeOfAuction[_saleId] = block.timestamp + timeOfAuction ;
+        // emit AuctionStarted(_timeOfAuction[_saleId]);
     }
 
     function executeBidOrder(uint256 _saleId, uint256 _bidOrderID)
         public
         nonReentrant
     {
-         require(msg.sender == _tokenMeta[_saleId].currentOwner);
+        require(msg.sender == _tokenMeta[_saleId].currentOwner);
+
+         LibShare.Share[] memory royalties;
+
+        if(_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
+            royalties = PNDC_ERC721(PNDCAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+        }
+
+        else {
+            royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+        }
 
         ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
             address(this),
             Bids[_saleId][_bidOrderID].buyerAddress,
             _tokenMeta[_saleId].tokenId
         );
-        payable(msg.sender).transfer(Bids[_saleId][_bidOrderID].price);
+
+         uint sum = Bids[_saleId][_bidOrderID].price;
+
+        for(uint256 i = 0; i < royalties.length; i ++) {
+            uint256 amount = (royalties[i].value / 10000) * Bids[_saleId][_bidOrderID].price;
+            address payable receiver = royalties[i].account;
+            receiver.transfer(amount);
+            sum = sum - amount;
+        }
+
+        payable(msg.sender).transfer(sum);
 
         _tokenMeta[_saleId].currentOwner = Bids[_saleId][_bidOrderID]
             .buyerAddress;
