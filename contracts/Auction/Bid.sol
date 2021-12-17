@@ -41,8 +41,7 @@ contract NFTBid is NFTFactoryContract {
         _tokenMeta[_saleId].bidSale = true;
         _tokenMeta[_saleId].price = _price;
         _tokenMeta[_saleId].status = true;
-        // _timeOfAuction[_saleId] = block.timestamp + timeOfAuction ;
-        // emit AuctionStarted(_timeOfAuction[_saleId]);
+      
     }
 
     function executeBidOrder(uint256 _saleId, uint256 _bidOrderID)
