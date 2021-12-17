@@ -49,6 +49,7 @@ contract NFTBid is NFTFactoryContract {
         nonReentrant
     {
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
+        require(Bids[_saleId][_bidOrderID].withdrawn == false, "Withdrawn");
 
          LibShare.Share[] memory royalties;
 
