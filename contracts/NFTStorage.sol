@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "./Libraries/LibMeta.sol";
 import "./Libraries/LibBid.sol";
 import "./Libraries/LibCollection.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract NFTV1Storage {
 
@@ -14,6 +15,8 @@ contract NFTV1Storage {
     mapping(uint256 => LibCollection.CollectionMeta) public collections;
     mapping(address => uint256[]) public ownerToCollections;
     mapping(address => address) public collectionToOwner;
-    
+    Counters.Counter public collectionIdTracker;
+    Counters.Counter internal _tokenIdTracker;
+    address internal PNDCAddress;
 }
 

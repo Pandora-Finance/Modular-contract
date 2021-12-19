@@ -12,15 +12,12 @@ import "./PNDC_ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract NFTFactoryContract is
-    NFTV1Storage,
     OwnableUpgradeable,
     ReentrancyGuardUpgradeable,
-    ERC721HolderUpgradeable
+    ERC721HolderUpgradeable,
+    NFTV1Storage
 {
     using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdTracker;
-
-    address internal PNDCAddress;
 
     function initialize() initializer public {
         OwnableUpgradeable.__Ownable_init();

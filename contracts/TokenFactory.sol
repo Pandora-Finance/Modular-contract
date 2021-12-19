@@ -6,16 +6,15 @@ import "./Libraries/LibERC721.sol";
 import "./Libraries/LibCollection.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-contract TokenFactory is NFTBid, UUPSUpgradeable {
+contract TokenFactory is UUPSUpgradeable, NFTBid {
 
     using Counters for Counters.Counter;
-    Counters.Counter public collectionIdTracker;
 
     event ERC721Deployed(address indexed _from, address _tokenAddress);
 
     function initialize(address _address) initializer public {
         PNDCAddress = _address;
-        initialize();
+        NFTFactoryContract.initialize();
         __UUPSUpgradeable_init();
     }
 
