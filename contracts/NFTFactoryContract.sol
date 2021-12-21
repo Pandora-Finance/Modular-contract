@@ -51,7 +51,7 @@ contract NFTFactoryContract is
         require(meta.status == true);
         require(msg.sender != address(0) && msg.sender != meta.currentOwner);
         require(meta.bidSale == false);
-        require(msg.value >= meta.price, "Price >= nft price");
+        require(msg.value >= meta.price);
 
         uint sum = msg.value;
 
@@ -85,6 +85,8 @@ contract NFTFactoryContract is
             true,
             false,
             true,
+            0,
+            0,
             ERC721(_collectionAddress).ownerOf(_tokenId),
             _msgSender()
         );
@@ -95,7 +97,13 @@ contract NFTFactoryContract is
 
     }
 
-    
+    function cancelSale(uint256 _saleId) public {
 
+        require(msg.sender == _tokenMeta[_saleId].currentOwner);
+        require(_tokenMeta[_saleId].status == true);
+
+        _tokenMeta[_saleId].status = false;
+
+    }
 
 }

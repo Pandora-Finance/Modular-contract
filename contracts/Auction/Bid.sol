@@ -10,12 +10,14 @@ contract NFTBid is NFTFactoryContract {
     event BidExecuted(uint256 price);
     event AuctionStarted(uint time);
 
+    using Counters for Counters.Counter;
+
     function Bid(uint256 _saleId) public payable {
-        require(_tokenMeta[_saleId].currentOwner != _msgSender(), "Owners Can't Bid");
-        require(_tokenMeta[_saleId].status == true, "NFT not open for sale");
+        require(_tokenMeta[_saleId].currentOwner != _msgSender());
+        require(_tokenMeta[_saleId].status == true);
+        require(block.timestamp <= _tokenMeta[_saleId].bidEndTime);
         require(
-            _tokenMeta[_saleId].price <= msg.value,
-            "price >= to selling price"
+            _tokenMeta[_saleId].price < msg.value
         );
         //  require(_timeOfAuction[_saleId] >= block.timestamp,"Auction Over");
 
@@ -27,20 +29,38 @@ contract NFTBid is NFTFactoryContract {
             false
         );
         Bids[_saleId].push(bid);
-        // Bids[_tokenId].push(BidOrder(_tokenId, _sellerAddress, _buyerAddress, _bidPrice));
+        _tokenMeta[_saleId].price == msg.value;
 
         emit BidOrderReturn(bid);
     }
 
-    function SellNFT_byBid(uint256 _saleId, uint256 _price)
+    function SellNFT_byBid(address _collectionAddress, uint256 _tokenId, uint256 _price, uint256 _bidTime)
         public
+        onlyOwnerOfToken(_collectionAddress, _tokenId)
     {
-        require(msg.sender == _tokenMeta[_saleId].currentOwner);
 
-        _tokenMeta[_saleId].directSale = false;
-        _tokenMeta[_saleId].bidSale = true;
-        _tokenMeta[_saleId].price = _price;
-        _tokenMeta[_saleId].status = true;
+         _tokenIdTracker.increment();
+
+        //needs approval on frontend
+        ERC721(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId);
+
+        LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
+            _tokenIdTracker.current(),
+            _collectionAddress,
+            _tokenId,
+            _price,
+            false,
+            true,
+            true,
+            block.timestamp,
+            block.timestamp + _bidTime,
+            ERC721(_collectionAddress).ownerOf(_tokenId),
+            _msgSender()
+        );
+
+         _tokenMeta[_tokenIdTracker.current()] = meta;
+
+        emit TokenMetaReturn(meta, _tokenIdTracker.current());
       
     }
 
@@ -49,7 +69,8 @@ contract NFTBid is NFTFactoryContract {
         nonReentrant
     {
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
-        require(Bids[_saleId][_bidOrderID].withdrawn == false, "Withdrawn");
+        require(Bids[_saleId][_bidOrderID].withdrawn == false);
+        require(_tokenMeta[_saleId].status == true);
 
          LibShare.Share[] memory royalties;
 
@@ -89,16 +110,14 @@ contract NFTBid is NFTFactoryContract {
 
     function withdrawBidMoney(uint256 _saleId, uint256 _bidId) public {
         require(
-            msg.sender != _tokenMeta[_saleId].currentOwner,
-            "Owner can't withdraw"
+            msg.sender != _tokenMeta[_saleId].currentOwner
         );
         // BidOrder[] memory bids = Bids[_tokenId];
 
         require(
-            Bids[_saleId][_bidId].buyerAddress == msg.sender,
-            "Bidder can only withdraw"
+            Bids[_saleId][_bidId].buyerAddress == msg.sender
         );
-        require(Bids[_saleId][_bidId].withdrawn == false, "Withdrawn");
+        require(Bids[_saleId][_bidId].withdrawn == false);
         if (payable(msg.sender).send(Bids[_saleId][_bidId].price)) {
             Bids[_saleId][_bidId].withdrawn = true;
         } else {

@@ -20,7 +20,7 @@ contract("PNDC_ERC721", (accounts) => {
     const instance2 = await TokenFactory.deployed();  
 
   
-    result = await instance2.initialize(instance.address) ;
+    //result = await instance2.initialize(instance.address) ;
     assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
     
   });  
@@ -49,8 +49,7 @@ contract("PNDC_ERC721", (accounts) => {
     const instance2 = await TokenFactory.deployed();      
     
     await instance.approve(instance2.address,0,{from:accounts[1]});
-    await instance2.sellNFT(instance.address,0,600,{from:accounts[1]});
-    await instance2.SellNFT_byBid(2,600,{from:accounts[1]});
+    await instance2.SellNFT_byBid(instance.address,0,600,300,{from:accounts[1]});
     result = await instance2._tokenMeta(2)
     assert.equal(result.bidSale, true);
   });  

@@ -70,8 +70,7 @@ contract("TokenFactory", (accounts) => {
     instance2 = await TokenERC721.at(collectionAddress);       
     
     await instance2.approve(instance.address,0,{from:accounts[1]});
-    await instance.sellNFT(collectionAddress,0,600,{from:accounts[1]});
-    await instance.SellNFT_byBid(2,600,{from:accounts[1]});
+    await instance.SellNFT_byBid(collectionAddress,0,600,300,{from:accounts[1]});
     result = await instance._tokenMeta(2)
     assert.equal(result.bidSale, true);
   });  
