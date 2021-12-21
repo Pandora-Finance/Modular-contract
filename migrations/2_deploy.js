@@ -17,8 +17,9 @@ module.exports = async function (deployer) {
   await deployer.deploy(LibERC721);
   await deployer.link(LibERC721, TokenFactory);
   await deployer.deploy(PNDC_ERC721, "NFT", "NFT");
+  var pndc = await PNDC_ERC721.deployed();
   // await deployer.deploy(TokenFactory);
-  await deployProxy(TokenFactory, {
+  await deployProxy(TokenFactory, [pndc.address], {
     kind: "uups",
     unsafeAllow: ["external-library-linking"],
   }).then((res) => console.log("Factory", res.address));
