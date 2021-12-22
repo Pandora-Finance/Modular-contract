@@ -110,7 +110,40 @@ contract("TokenFactory", (accounts) => {
     await instance.withdrawBidMoney(2,2,{from:accounts[4]});   
     result = await web3.eth.getBalance(instance.address);
     assert.equal( result , 0);
-  });    
+  });   
+  
+  it("Testing the sale cancelation", async () => {
+    const instance = await TokenFactory.deployed();   
+    collectionMeta = await instance.collections(1);
+    collectionAddress = collectionMeta[3];
+    instance2 = await TokenERC721.at(collectionAddress);
+
+    result = await instance2.safeMint(accounts[0],"URI",[true,[[accounts[0],600]]]);  
+    result2 = await instance2.ownerOf(1);
+    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result2,accounts[0]);
+
+    await instance2.approve(instance.address, 1);
+    await instance.sellNFT(instance2.address, 1, 600);
+    assert.equal(await instance2.ownerOf(1), instance.address);
+    
+    await instance.cancelSale(3);
+    assert.equal(await instance2.ownerOf(1), accounts[0]);
+
+    let res = await instance._tokenMeta(3);
+    assert.equal(res.status, false);
+
+    await instance2.approve(instance.address, 1);
+    await instance.SellNFT_byBid(instance2.address, 1, 600, 300);
+    assert.equal(await instance2.ownerOf(1), instance.address);
+    
+    await instance.cancelSale(4);
+    assert.equal(await instance2.ownerOf(1), accounts[0]);
+
+    res = await instance._tokenMeta(4);
+    assert.equal(res.status, false);
+
+  });
 
 
 

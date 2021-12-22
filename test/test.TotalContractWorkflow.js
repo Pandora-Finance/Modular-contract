@@ -83,7 +83,38 @@ contract("PNDC_ERC721", (accounts) => {
     await instance2.withdrawBidMoney(2,2,{from:accounts[4]});   
     result = await web3.eth.getBalance(instance2.address);
     assert.equal( result , 0);
-  });    
+  });
+  
+  it("Testing the sale cancelation", async () => {
+    const instance = await PNDC_ERC721.deployed();
+    const instance2 = await TokenFactory.deployed(); 
+
+    result = await instance.safeMint(accounts[0],"URI",[[accounts[0],500]]);  
+    result2 = await instance.ownerOf(1);
+    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result2,accounts[0]);
+
+    await instance.approve(instance2.address, 1);
+    await instance2.sellNFT(instance.address, 1, 600);
+    assert.equal(await instance.ownerOf(1), instance2.address);
+    
+    await instance2.cancelSale(3);
+    assert.equal(await instance.ownerOf(1), accounts[0]);
+
+    let res = await instance2._tokenMeta(3);
+    assert.equal(res.status, false);
+
+    await instance.approve(instance2.address, 1);
+    await instance2.SellNFT_byBid(instance.address, 1, 600, 300);
+    assert.equal(await instance.ownerOf(1), instance2.address);
+    
+    await instance2.cancelSale(4);
+    assert.equal(await instance.ownerOf(1), accounts[0]);
+
+    res = await instance2._tokenMeta(4);
+    assert.equal(res.status, false);
+
+  });
 
 
  })
