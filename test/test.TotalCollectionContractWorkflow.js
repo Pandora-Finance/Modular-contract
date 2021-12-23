@@ -1,4 +1,4 @@
-
+var BigNumber = require('big-number');
 const TokenERC721 = artifacts.require("TokenERC721");
 const TokenFactory = artifacts.require("TokenFactory");
 contract("TokenFactory", (accounts) => { 
@@ -31,7 +31,7 @@ contract("TokenFactory", (accounts) => {
     collectionAddress = collectionMeta[3];
 
     
-    result = await instance2.safeMint(accounts[0],"URI_ERC721",[true,[[accounts[0],600]]]);
+    result = await instance2.safeMint(accounts[0],"URI_ERC721",[true,[[accounts[3],600]]]);
     assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");     
     
   });  
@@ -56,11 +56,20 @@ contract("TokenFactory", (accounts) => {
     const instance = await TokenFactory.deployed();   
     collectionMeta = await instance.collections(1);
     collectionAddress = collectionMeta[3];
-    instance2 = await TokenERC721.at(collectionAddress);    
+    instance2 = await TokenERC721.at(collectionAddress);  
+    
+    let _balance1 = await web3.eth.getBalance(accounts[0]);
+    let _balance2 = await web3.eth.getBalance(accounts[3]);
     
     result2 = await instance.BuyNFT(1,{from:accounts[1],value:700});
     rest = await instance2.ownerOf(0);
     assert.equal(rest,accounts[1]);
+
+    let balance1 = await web3.eth.getBalance(accounts[0]);
+    let balance2 = await web3.eth.getBalance(accounts[3]);
+
+    assert.equal(BigNumber(balance2).minus(BigNumber(_balance2)) , (700 * 600) / 10000)
+    assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (700 * 9400) / 10000)
   });    
 
   it("Testing collections smart contract SellNFT_byBid", async () => {
@@ -93,11 +102,16 @@ contract("TokenFactory", (accounts) => {
     const instance = await TokenFactory.deployed();   
     collectionMeta = await instance.collections(1);
     collectionAddress = collectionMeta[3];
-    instance2 = await TokenERC721.at(collectionAddress);      
+    instance2 = await TokenERC721.at(collectionAddress);   
+    
+    let _balance1 = await web3.eth.getBalance(accounts[3]);
     
     await instance.executeBidOrder(2,0,{from:accounts[1]});    
     result = await instance2.ownerOf(0)
     assert.equal(result , accounts[2]);    
+
+    let balance1 = await web3.eth.getBalance(accounts[3]);
+    assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (1000 * 600) / 10000)
   });    
   
   it("Testing the withdrawal of the bid of the collections", async () => {

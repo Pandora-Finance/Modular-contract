@@ -1,4 +1,4 @@
-
+var BigNumber = require('big-number');
 const PNDC_ERC721 = artifacts.require("PNDC_ERC721");
 const TokenFactory = artifacts.require("TokenFactory");
 contract("PNDC_ERC721", (accounts) => {
@@ -8,7 +8,7 @@ contract("PNDC_ERC721", (accounts) => {
     const instance = await PNDC_ERC721.deployed();
     const instance2 = await TokenFactory.deployed();  
 
-    result = await instance.safeMint(accounts[0],"URI",[[accounts[0],500]]);  
+    result = await instance.safeMint(accounts[0],"URI",[[accounts[3],500]]);  
     result2 = await instance.ownerOf(0);
     assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
     assert.equal(result2,accounts[0]);
@@ -37,11 +37,20 @@ contract("PNDC_ERC721", (accounts) => {
 
   it("Testing smart contract BuyNFT function ", async () => {
     const instance = await PNDC_ERC721.deployed();
-    const instance2 = await TokenFactory.deployed();      
+    const instance2 = await TokenFactory.deployed();
+    
+    let _balance1 = await web3.eth.getBalance(accounts[0]);
+    let _balance2 = await web3.eth.getBalance(accounts[3]);
     
     result2 = await instance2.BuyNFT(1,{from:accounts[1],value:700});
     rest = await instance.ownerOf(0);
     assert.equal(rest,accounts[1]);
+
+    let balance1 = await web3.eth.getBalance(accounts[0]);
+    let balance2 = await web3.eth.getBalance(accounts[3]);
+
+    assert.equal(BigNumber(balance2).minus(BigNumber(_balance2)) , (700 * 500) / 10000)
+    assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (700 * 9500) / 10000)
   });    
 
   it("Testing smart contract SellNFT_byBid", async () => {
@@ -68,11 +77,16 @@ contract("PNDC_ERC721", (accounts) => {
 
   it("Testing the execution of the bid", async () => {
     const instance = await PNDC_ERC721.deployed();
-    const instance2 = await TokenFactory.deployed();      
+    const instance2 = await TokenFactory.deployed(); 
+    
+    let _balance1 = await web3.eth.getBalance(accounts[3]);
     
     await instance2.executeBidOrder(2,0,{from:accounts[1]});    
     result = await instance.ownerOf(0)
-    assert.equal(result , accounts[2]);    
+    assert.equal(result , accounts[2]);  
+    
+    let balance1 = await web3.eth.getBalance(accounts[3]);
+    assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (1000 * 500) / 10000)
   });    
   
   it("Testing the withdrawal of the bid", async () => {
