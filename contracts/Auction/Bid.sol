@@ -15,6 +15,7 @@ contract NFTBid is NFTFactoryContract {
     function Bid(uint256 _saleId) public payable {
         require(_tokenMeta[_saleId].currentOwner != _msgSender());
         require(_tokenMeta[_saleId].status == true);
+        require(_tokenMeta[_saleId].bidSale == true);
         require(block.timestamp <= _tokenMeta[_saleId].bidEndTime);
         require(
             _tokenMeta[_saleId].price < msg.value
@@ -99,10 +100,6 @@ contract NFTBid is NFTFactoryContract {
 
         payable(msg.sender).transfer(sum);
 
-        _tokenMeta[_saleId].currentOwner = Bids[_saleId][_bidOrderID]
-            .buyerAddress;
-        _tokenMeta[_saleId].price = Bids[_saleId][_bidOrderID].price;
-        _tokenMeta[_saleId].bidSale = false;
         _tokenMeta[_saleId].status = false;
         Bids[_saleId][_bidOrderID].withdrawn == true;
 
