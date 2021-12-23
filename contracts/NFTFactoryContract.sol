@@ -56,7 +56,7 @@ contract NFTFactoryContract is
         uint sum = msg.value;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
-            uint256 amount = (royalties[i].value / 10000) * msg.value;
+            uint256 amount = (royalties[i].value * msg.value) / 10000;
             address payable receiver = royalties[i].account;
             receiver.transfer(amount);
             sum = sum - amount;

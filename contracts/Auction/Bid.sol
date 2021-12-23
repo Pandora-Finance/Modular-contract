@@ -92,7 +92,7 @@ contract NFTBid is NFTFactoryContract {
          uint sum = Bids[_saleId][_bidOrderID].price;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
-            uint256 amount = (royalties[i].value / 10000) * Bids[_saleId][_bidOrderID].price;
+            uint256 amount = (royalties[i].value * Bids[_saleId][_bidOrderID].price) / 10000;
             address payable receiver = royalties[i].account;
             receiver.transfer(amount);
             sum = sum - amount;
