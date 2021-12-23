@@ -104,6 +104,7 @@ contract NFTBid is NFTFactoryContract {
         _tokenMeta[_saleId].price = Bids[_saleId][_bidOrderID].price;
         _tokenMeta[_saleId].bidSale = false;
         _tokenMeta[_saleId].status = false;
+        Bids[_saleId][_bidOrderID].withdrawn == true;
 
         emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }
