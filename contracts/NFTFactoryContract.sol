@@ -71,6 +71,7 @@ contract NFTFactoryContract is
     function sellNFT(address _collectionAddress, uint256 _tokenId, uint256 _price) 
     public 
     onlyOwnerOfToken(_collectionAddress, _tokenId)
+    nonReentrant
     {
         _tokenIdTracker.increment();
 
@@ -97,7 +98,7 @@ contract NFTFactoryContract is
 
     }
 
-    function cancelSale(uint256 _saleId) public {
+    function cancelSale(uint256 _saleId) public nonReentrant{
 
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
         require(_tokenMeta[_saleId].status == true);
