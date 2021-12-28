@@ -22,6 +22,9 @@
 // //
 //  const fs = require('fs');
 // const mnemonic = fs.readFileSync(".env").toString().trim();
+require('dotenv').config();
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+const mnemonic = process.env.PK
 
 module.exports = {
   /**
@@ -47,6 +50,13 @@ module.exports = {
      gas: 6721975,
      gasPrice: 20000000000
     },
+    testnet: {
+      provider: () => new HDWalletProvider(mnemonic, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      network_id: 97,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    }
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port

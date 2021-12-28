@@ -23,4 +23,5 @@ module.exports = async function (deployer) {
     kind: "uups",
     unsafeAllow: ["external-library-linking"],
   }).then((res) => console.log("Factory", res.address));
+  console.log(pndc.address);
 };
