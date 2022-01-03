@@ -25,6 +25,7 @@
 require('dotenv').config();
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const mnemonic = process.env.PK
+const bscapi = process.env.BSC_API
 
 module.exports = {
   /**
@@ -36,6 +37,9 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
+  api_keys: {
+    bscscan: bscapi
+  },
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
@@ -133,6 +137,7 @@ module.exports = {
     // }
   // }
   plugins: [
-    'truffle-contract-size'
+    'truffle-contract-size',
+    'truffle-plugin-verify'
   ]
 };
