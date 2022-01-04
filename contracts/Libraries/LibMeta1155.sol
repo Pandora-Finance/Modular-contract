@@ -18,10 +18,11 @@ library LibMeta1155 {
         address currentOwner;
     }
 
-    function transfer(TokenMeta memory token, address _to ) public pure{
+    function transfer(TokenMeta memory token, address _to, uint256 _numberOfTokens ) public pure{
         token.currentOwner = _to;
         token.status = false;
         token.directSale = false ;
         token.bidSale = false ;
+        token.numberOfTokens = token.numberOfTokens - _numberOfTokens;
     } 
 }
