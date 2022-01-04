@@ -9,9 +9,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract NFTV1Storage1155 {
 
     mapping(uint256 => LibMeta1155.TokenMeta) public _tokenMeta;
-    uint public _tokenIds;
     mapping(uint256 => LibBid1155.BidOrder[]) public Bids;
-    string baseURI;
     mapping(uint256 => LibCollection1155.CollectionMeta) public collections;
     mapping(address => uint256[]) public ownerToCollections;
     mapping(address => address) public collectionToOwner;

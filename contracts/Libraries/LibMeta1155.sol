@@ -12,9 +12,6 @@ library LibMeta1155 {
         bool directSale;
         bool bidSale;
         bool status;
-        uint256 bidStartTime;
-        uint256 bidEndTime;
-        address mintedBy;
         address currentOwner;
     }
 

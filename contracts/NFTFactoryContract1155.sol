@@ -31,11 +31,10 @@ contract NFTFactoryContract1155 is
 // Change in BuyNFT LibMeta Function
 
     function BuyNFT(uint256 _saleId, uint256 _amount) public payable nonReentrant {
-        LibMeta1155.TokenMeta memory meta = _tokenMeta[_saleId];
-        
+    
         LibShare.Share[] memory royalties;
 
-        if(meta.collectionAddress == PNDC1155Address) {
+        if(_tokenMeta[_saleId].collectionAddress == PNDC1155Address) {
             royalties = PNDC_ERC1155(PNDC1155Address).getRoyalties(_tokenMeta[_saleId].tokenId);
         }
 
@@ -43,25 +42,22 @@ contract NFTFactoryContract1155 is
             royalties = TokenERC1155(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
         }
 
-        uint256 bal = ERC1155(meta.collectionAddress).balanceOf(address(this), meta.tokenId);
+        require(_tokenMeta[_saleId].status == true);
+        require(msg.sender != address(0) && msg.sender != _tokenMeta[_saleId].currentOwner);
+        require(_tokenMeta[_saleId].bidSale == false);
+        require(_tokenMeta[_saleId].numberOfTokens >= _amount);
+        require(msg.value >= (_tokenMeta[_saleId].price * _amount));
 
-        require(meta.status == true);
-        require(msg.sender != address(0) && msg.sender != meta.currentOwner);
-        require(meta.bidSale == false);
-        require(bal >= _amount);
-        require(msg.value >= (meta.price * _amount));
-
-        uint sum = msg.value;
+        uint256 sum = msg.value;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
             uint256 amount = (royalties[i].value * msg.value ) / 10000;
-            address payable receiver = royalties[i].account;
-            receiver.transfer(amount);
+            royalties[i].account.transfer(amount);
             sum = sum - amount;
         }
 
-        payable(meta.currentOwner).transfer(sum);
-        ERC1155(meta.collectionAddress).safeTransferFrom(address(this), msg.sender, meta.tokenId, _amount, "");
+        payable(_tokenMeta[_saleId].currentOwner).transfer(sum);
+        ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(address(this), msg.sender, _tokenMeta[_saleId].tokenId, _amount, "");
         LibMeta1155.transfer(_tokenMeta[_saleId],_amount);
 
     }
@@ -87,10 +83,7 @@ contract NFTFactoryContract1155 is
             true,
             false,
             true,
-            0,
-            0,
-            _msgSender(),
-            _msgSender()
+            msg.sender
         );
 
          _tokenMeta[_tokenIdTracker.current()] = meta;

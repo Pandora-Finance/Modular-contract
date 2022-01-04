@@ -5,7 +5,7 @@ import "../TokenERC1155.sol";
 import "./LibShare.sol";
 
 library LibERC1155 {
-    function deployERC721(string memory uri, LibShare.Share[] memory royalties)
+    function deployERC1155(string memory uri, LibShare.Share[] memory royalties)
         external
         returns (address)
     {
