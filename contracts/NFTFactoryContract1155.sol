@@ -62,7 +62,7 @@ contract NFTFactoryContract1155 is
 
         payable(meta.currentOwner).transfer(sum);
         ERC1155(meta.collectionAddress).safeTransferFrom(address(this), msg.sender, meta.tokenId, _amount, "");
-        LibMeta1155.transfer(_tokenMeta[_saleId],msg.sender,_amount);
+        LibMeta1155.transfer(_tokenMeta[_saleId],_amount);
 
     }
 
