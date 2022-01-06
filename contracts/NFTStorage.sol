@@ -5,8 +5,9 @@ import "./Libraries/LibMeta.sol";
 import "./Libraries/LibBid.sol";
 import "./Libraries/LibCollection.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract NFTV1Storage {
+contract NFTV1Storage is Initializable{
 
     mapping(uint256 => LibMeta.TokenMeta) public _tokenMeta;
     uint public _tokenIds;

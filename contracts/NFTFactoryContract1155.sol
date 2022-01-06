@@ -51,15 +51,22 @@ contract NFTFactoryContract1155 is
         LibMeta1155.transfer(_tokenMeta[_saleId], _amount);
 
         uint256 sum = msg.value;
+        uint256 val = msg.value;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
-            uint256 amount = (royalties[i].value * msg.value ) / 10000;
+            uint256 amount = (royalties[i].value * val ) / 10000;
             royalties[i].account.transfer(amount);
             sum = sum - amount;
         }
 
         payable(_tokenMeta[_saleId].currentOwner).transfer(sum);
-        ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(address(this), msg.sender, _tokenMeta[_saleId].tokenId, _amount, "");
+        ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
+            address(this), 
+            msg.sender, 
+            _tokenMeta[_saleId].tokenId, 
+            _amount, 
+            ""
+            );
 
     }
 
