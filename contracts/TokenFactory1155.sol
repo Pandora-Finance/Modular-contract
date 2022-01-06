@@ -18,7 +18,7 @@ contract TokenFactory1155 is UUPSUpgradeable, NFTBid1155 {
         __UUPSUpgradeable_init();
     }
 
-    function deployERC721(
+    function deployERC1155(
         string memory _uri, 
         string memory description, 
         LibShare.Share[] memory royalties) 

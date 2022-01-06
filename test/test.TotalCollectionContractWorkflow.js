@@ -60,6 +60,9 @@ contract("TokenFactory", (accounts) => {
     
     let _balance1 = await web3.eth.getBalance(accounts[0]);
     let _balance2 = await web3.eth.getBalance(accounts[3]);
+
+    let meta = await instance._tokenMeta(1);
+    assert.equal(meta.status, true);
     
     result2 = await instance.BuyNFT(1,{from:accounts[1],value:700});
     rest = await instance2.ownerOf(0);
@@ -70,6 +73,9 @@ contract("TokenFactory", (accounts) => {
 
     assert.equal(BigNumber(balance2).minus(BigNumber(_balance2)) , (700 * 600) / 10000)
     assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (700 * 9400) / 10000)
+
+    meta = await instance._tokenMeta(1);
+    assert.equal(meta.status, false);
   });    
 
   it("Testing collections smart contract SellNFT_byBid", async () => {
