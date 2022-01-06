@@ -80,6 +80,10 @@ contract("TokenFactory1155", (accounts) => {
     assert.equal(BigNumber(balance2).minus(BigNumber(_balance2)) , (1000 * 500) / 10000)
     assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (1000 * 9500) / 10000)
 
+    await instance.BuyNFT(1, 3,{from:accounts[1],value:1500});
+    meta = await instance._tokenMeta(1);
+    assert.equal(meta.status, false);
+
     // meta = await instance._tokenMeta(1);
     // assert.equal(meta.status, false);
   });    
@@ -124,6 +128,9 @@ contract("TokenFactory1155", (accounts) => {
 
     let balance1 = await web3.eth.getBalance(accounts[3]);
     assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (1000 * 500) / 10000)
+
+    let meta = await instance._tokenMeta(2);
+    assert.equal(meta.status, false);
   });    
   
   it("Testing the withdrawal of the bid of the collections", async () => {
