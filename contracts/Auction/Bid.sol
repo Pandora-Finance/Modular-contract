@@ -84,6 +84,9 @@ contract NFTBid is NFTFactoryContract {
             royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
         }
 
+        _tokenMeta[_saleId].status = false;
+        Bids[_saleId][_bidOrderID].withdrawn == true;
+
         ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
             address(this),
             Bids[_saleId][_bidOrderID].buyerAddress,
@@ -100,9 +103,6 @@ contract NFTBid is NFTFactoryContract {
         }
 
         payable(msg.sender).transfer(sum);
-
-        _tokenMeta[_saleId].status = false;
-        Bids[_saleId][_bidOrderID].withdrawn == true;
 
         emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }
