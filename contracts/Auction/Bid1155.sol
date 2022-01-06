@@ -46,7 +46,6 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         ERC1155(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId, _amount, "");
 
         LibMeta1155.TokenMeta memory meta = LibMeta1155.TokenMeta(
-            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _amount,
@@ -82,6 +81,9 @@ contract NFTBid1155 is NFTFactoryContract1155 {
             royalties = TokenERC1155(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
         }
 
+        LibMeta1155.transfer(_tokenMeta[_saleId], Bids[_saleId][_bidOrderID].numberOfTokens);
+        Bids[_saleId][_bidOrderID].withdrawn == true;
+
         ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
             address(this),
             Bids[_saleId][_bidOrderID].buyerAddress,
@@ -99,9 +101,6 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         }
 
         payable(msg.sender).transfer(sum);
-
-        LibMeta1155.transfer(_tokenMeta[_saleId], Bids[_saleId][_bidOrderID].numberOfTokens);
-        Bids[_saleId][_bidOrderID].withdrawn == true;
 
         emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }

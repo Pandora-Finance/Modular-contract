@@ -53,10 +53,14 @@ contract NFTFactoryContract is
         require(meta.bidSale == false);
         require(msg.value >= meta.price);
 
+        LibMeta.TokenMeta memory tok = LibMeta.transfer(_tokenMeta[_saleId],msg.sender);
+        _tokenMeta[_saleId] = tok;
+
         uint sum = msg.value;
+        uint val = msg.value;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
-            uint256 amount = (royalties[i].value * msg.value) / 10000;
+            uint256 amount = (royalties[i].value * val) / 10000;
             address payable receiver = royalties[i].account;
             receiver.transfer(amount);
             sum = sum - amount;
@@ -64,7 +68,6 @@ contract NFTFactoryContract is
 
         payable(meta.currentOwner).transfer(sum);
         ERC721(meta.collectionAddress).safeTransferFrom(address(this), msg.sender, meta.tokenId);
-        LibMeta.transfer(_tokenMeta[_saleId],msg.sender);
 
     }
 
@@ -103,8 +106,13 @@ contract NFTFactoryContract is
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
         require(_tokenMeta[_saleId].status == true);
 
-        ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(address(this), _tokenMeta[_saleId].currentOwner, _tokenMeta[_saleId].tokenId);
         _tokenMeta[_saleId].status = false;
+        ERC721(_tokenMeta[_saleId].collectionAddress)
+        .safeTransferFrom(
+            address(this), 
+            _tokenMeta[_saleId].currentOwner, 
+            _tokenMeta[_saleId].tokenId
+            );
 
     }
 

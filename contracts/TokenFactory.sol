@@ -18,7 +18,13 @@ contract TokenFactory is UUPSUpgradeable, NFTBid {
         __UUPSUpgradeable_init();
     }
 
-    function deployERC721(string memory name, string memory symbol, string memory description, LibShare.Share[] memory royalties) external nonReentrant{
+    function deployERC721(
+        string memory name, 
+        string memory symbol, 
+        string memory description, 
+        LibShare.Share[] memory royalties) 
+        external 
+        nonReentrant{
 
         collectionIdTracker.increment();
 

@@ -48,6 +48,8 @@ contract NFTFactoryContract1155 is
         require(_tokenMeta[_saleId].numberOfTokens >= _amount);
         require(msg.value >= (_tokenMeta[_saleId].price * _amount));
 
+        LibMeta1155.transfer(_tokenMeta[_saleId], _amount);
+
         uint256 sum = msg.value;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
@@ -58,7 +60,6 @@ contract NFTFactoryContract1155 is
 
         payable(_tokenMeta[_saleId].currentOwner).transfer(sum);
         ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(address(this), msg.sender, _tokenMeta[_saleId].tokenId, _amount, "");
-        LibMeta1155.transfer(_tokenMeta[_saleId],_amount);
 
     }
 
@@ -75,7 +76,6 @@ contract NFTFactoryContract1155 is
         ERC1155(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId, _amount, "");
 
         LibMeta1155.TokenMeta memory meta = LibMeta1155.TokenMeta(
-            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _amount,
@@ -97,8 +97,14 @@ contract NFTFactoryContract1155 is
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
         require(_tokenMeta[_saleId].status == true);
 
-        ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(address(this), _tokenMeta[_saleId].currentOwner, _tokenMeta[_saleId].tokenId, _tokenMeta[_saleId].numberOfTokens, "");
         _tokenMeta[_saleId].status = false;
+        ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
+            address(this), 
+            _tokenMeta[_saleId].currentOwner, 
+            _tokenMeta[_saleId].tokenId, 
+            _tokenMeta[_saleId].numberOfTokens, 
+            ""
+            );
 
     }
 

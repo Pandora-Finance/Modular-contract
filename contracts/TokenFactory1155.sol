@@ -18,14 +18,18 @@ contract TokenFactory1155 is UUPSUpgradeable, NFTBid1155 {
         __UUPSUpgradeable_init();
     }
 
-    function deployERC721(string memory _uri, string memory description, LibShare.Share[] memory royalties) external nonReentrant{
+    function deployERC721(
+        string memory _uri, 
+        string memory description, 
+        LibShare.Share[] memory royalties) 
+        external 
+        nonReentrant{
 
         collectionIdTracker.increment();
 
         address collectionAddress = LibERC1155.deployERC1155(_uri, royalties);
 
         LibCollection1155.CollectionMeta memory meta = LibCollection1155.CollectionMeta(
-            collectionIdTracker.current(),
             _uri,
             collectionAddress,
             msg.sender,

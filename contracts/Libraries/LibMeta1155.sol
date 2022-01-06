@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 library LibMeta1155 {
 
     struct TokenMeta {
-        uint256 saleId;
         address collectionAddress;
         uint256 tokenId;
         uint256 numberOfTokens;
@@ -15,7 +14,7 @@ library LibMeta1155 {
         address currentOwner;
     }
 
-    function transfer(TokenMeta memory token, uint256 _numberOfTokens ) public pure{
+    function transfer(TokenMeta storage token, uint256 _numberOfTokens ) internal{
         token.numberOfTokens = token.numberOfTokens - _numberOfTokens;
         if(token.numberOfTokens == 0) {
         token.status = false;
