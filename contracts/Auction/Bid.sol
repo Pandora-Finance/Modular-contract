@@ -47,7 +47,6 @@ contract NFTBid is NFTFactoryContract {
         ERC721(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId);
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
-            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _price,
@@ -56,7 +55,6 @@ contract NFTBid is NFTFactoryContract {
             true,
             block.timestamp,
             block.timestamp + _bidTime,
-            ERC721(_collectionAddress).ownerOf(_tokenId),
             _msgSender()
         );
 

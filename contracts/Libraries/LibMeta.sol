@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 library LibMeta {
 
     struct TokenMeta {
-        uint256 saleId;
         address collectionAddress;
         uint256 tokenId;
         uint256 price;
@@ -13,7 +12,6 @@ library LibMeta {
         bool status;
         uint256 bidStartTime;
         uint256 bidEndTime;
-        address mintedBy;
         address currentOwner;
     }
 

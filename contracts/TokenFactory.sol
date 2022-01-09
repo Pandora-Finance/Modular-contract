@@ -31,7 +31,6 @@ contract TokenFactory is UUPSUpgradeable, NFTBid {
         address collectionAddress = LibERC721.deployERC721(name, symbol, royalties);
 
         LibCollection.CollectionMeta memory meta = LibCollection.CollectionMeta(
-            collectionIdTracker.current(),
             name,
             symbol,
             collectionAddress,

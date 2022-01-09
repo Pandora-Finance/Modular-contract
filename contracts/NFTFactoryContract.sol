@@ -82,7 +82,6 @@ contract NFTFactoryContract is
         ERC721(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId);
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
-            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _price,
@@ -91,7 +90,6 @@ contract NFTFactoryContract is
             true,
             0,
             0,
-            ERC721(_collectionAddress).ownerOf(_tokenId),
             _msgSender()
         );
 

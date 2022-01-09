@@ -15,7 +15,7 @@ contract("TokenFactory", (accounts) => {
     const instance = await TokenFactory.deployed();   
 
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
 
     instance2 = await TokenERC721.at(collectionAddress);
     result = await instance2.owner();
@@ -28,7 +28,7 @@ contract("TokenFactory", (accounts) => {
     const instance = await TokenFactory.deployed();  
     instance2 = await TokenERC721.at(collectionAddress); 
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
 
     
     result = await instance2.safeMint(accounts[0],"URI_ERC721",[true,[[accounts[3],600]]]);
@@ -40,7 +40,7 @@ contract("TokenFactory", (accounts) => {
   it("Testing collection sale", async () => {
     const instance = await TokenFactory.deployed();  
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
     instance2 = await TokenERC721.at(collectionAddress); 
     
     
@@ -55,7 +55,7 @@ contract("TokenFactory", (accounts) => {
    
     const instance = await TokenFactory.deployed();   
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
     instance2 = await TokenERC721.at(collectionAddress);  
     
     let _balance1 = await web3.eth.getBalance(accounts[0]);
@@ -81,7 +81,7 @@ contract("TokenFactory", (accounts) => {
   it("Testing collections smart contract SellNFT_byBid", async () => {
     const instance = await TokenFactory.deployed();   
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
     instance2 = await TokenERC721.at(collectionAddress);       
     
     await instance2.approve(instance.address,0,{from:accounts[1]});
@@ -93,7 +93,7 @@ contract("TokenFactory", (accounts) => {
   it("Testing collections smart contract bidding functionality", async () => {
     const instance = await TokenFactory.deployed();   
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
     instance2 = await TokenERC721.at(collectionAddress);          
     
     await instance.Bid(2,{from:accounts[2],value:1000});
@@ -107,7 +107,7 @@ contract("TokenFactory", (accounts) => {
   it("Testing the execution of the bid of the collections", async () => {
     const instance = await TokenFactory.deployed();   
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
     instance2 = await TokenERC721.at(collectionAddress);   
     
     let _balance1 = await web3.eth.getBalance(accounts[3]);
@@ -123,7 +123,7 @@ contract("TokenFactory", (accounts) => {
   it("Testing the withdrawal of the bid of the collections", async () => {
     const instance = await TokenFactory.deployed();   
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
     instance2 = await TokenERC721.at(collectionAddress);        
     
     await instance.withdrawBidMoney(2,1,{from:accounts[3]});    
@@ -135,7 +135,7 @@ contract("TokenFactory", (accounts) => {
   it("Testing the sale cancelation", async () => {
     const instance = await TokenFactory.deployed();   
     collectionMeta = await instance.collections(1);
-    collectionAddress = collectionMeta[3];
+    collectionAddress = collectionMeta[2];
     instance2 = await TokenERC721.at(collectionAddress);
 
     result = await instance2.safeMint(accounts[0],"URI",[true,[[accounts[0],600]]]);  

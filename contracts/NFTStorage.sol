@@ -10,9 +10,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 contract NFTV1Storage is Initializable{
 
     mapping(uint256 => LibMeta.TokenMeta) public _tokenMeta;
-    uint public _tokenIds;
     mapping(uint256 => LibBid.BidOrder[]) public Bids;
-    string baseURI;
     mapping(uint256 => LibCollection.CollectionMeta) public collections;
     mapping(address => uint256[]) public ownerToCollections;
     mapping(address => address) public collectionToOwner;
