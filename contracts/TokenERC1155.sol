@@ -17,6 +17,7 @@ contract TokenERC1155 is ERC1155, Ownable, ERC1155Supply {
 
     LibShare.Share[] public collectionRoyalties;
     mapping(uint256 => RoyaltiesSet) public royaltiesByTokenId;
+    mapping(uint256 => string) _uris;
 
     constructor(string memory uri) ERC1155(uri) {}
 
@@ -25,13 +26,19 @@ contract TokenERC1155 is ERC1155, Ownable, ERC1155Supply {
         _setURI(newuri);
     }
 
+     function setTokenUri(string memory _uri, uint256 _tokenId) public {
+        _uris[_tokenId] = _uri;
+    }
+
     function mint(
         address account,
         uint256 id,
         uint256 amount,
+        string memory _uri,
         bytes memory data
     ) public onlyOwner {
         _mint(account, id, amount, data);
+        setTokenUri(_uri, id);
     }
 
     function setRoyaltiesByTokenId(

@@ -8,7 +8,7 @@ contract("PNDC_ERC1155", (accounts) => {
     const instance2 = await PNDC_ERC1155.deployed();
     const instance = await TokenFactory1155.deployed();  
 
-    result = await instance2.mint(accounts[0],10,[],[[accounts[3],500]]);  
+    result = await instance2.mint(accounts[0],10,[],"uri",[[accounts[3],500]]);  
     result2 = await instance2.balanceOf(accounts[0],0);
     assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
     assert.equal(result2,10);
@@ -122,7 +122,7 @@ contract("PNDC_ERC1155", (accounts) => {
     const instance2 = await PNDC_ERC1155.deployed();
     const instance = await TokenFactory1155.deployed(); 
 
-    result = await instance2.mint(accounts[0],10,[],[[accounts[3],500]]);  
+    result = await instance2.mint(accounts[0],10,[],"uri",[[accounts[3],500]]);  
     result2 = await instance2.balanceOf(accounts[0],1);
     assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
     assert.equal(result2,10);

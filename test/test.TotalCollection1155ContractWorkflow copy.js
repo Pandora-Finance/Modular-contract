@@ -3,6 +3,7 @@ const TokenERC1155 = artifacts.require("TokenERC1155");
 const TokenFactory1155 = artifacts.require("TokenFactory1155");
 contract("TokenFactory1155", (accounts) => { 
  describe("Testing Collections Workflow ", function(){ 
+   
   it("Testing deployment of collection", async () => {
     const instance = await TokenFactory1155.deployed();   
 
@@ -32,7 +33,7 @@ contract("TokenFactory1155", (accounts) => {
     instance2 = await TokenERC1155.at(collectionAddress);
 
     
-    result = await instance2.mint(accounts[0],0,10,[]);
+    result = await instance2.mint(accounts[0],0,10,"uri",[]);
     assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");     
     
   });  
@@ -151,7 +152,7 @@ contract("TokenFactory1155", (accounts) => {
     collectionAddress = collectionMeta[1];
     instance2 = await TokenERC1155.at(collectionAddress);
 
-    result = await instance2.mint(accounts[0],1,10,[]);  
+    result = await instance2.mint(accounts[0],1,10,"uri",[]);  
     result2 = await instance2.balanceOf(accounts[0],1);
     assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
     assert.equal(result2,10);

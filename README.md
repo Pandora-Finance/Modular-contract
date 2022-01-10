@@ -2,33 +2,33 @@
 ## 
 ##
 ##
-## NFTStorage
+## NFTStorage/NFTStorage1155
 
-- Contract stores data of sales, collections, and important mappings.
+- Contracts that store data of sales, collections, and important mappings.
 
-## PNDC_ERC721
+## PNDC_ERC721/PNDC_ERC1155
 
-- Contract for minting of single nft's
+- Contracts for minting of nft's
 - Also stores royalties of the nft's.
 
-## TokenERC721
+## TokenERC721/TokenERC1155
 
-- The boilerplate code for all the collection contract that will be deployed
+- The boilerplate code for all the collection contracts that will be deployed
 - One can mint their collection nft's
-- Also stores collection royalties and individual nft royalties
+- Also store collection royalties and individual nft royalties
 
-## NFTFactory
+## NFTFactory/NFTFActory1155
 
-- The main contract where one can buy and sell their nft's from various contract addresses
-- Inherits NFTStorage
-- On sale, sale metadata is collected and stored in NFTStorage
+- The main contracts where one can buy and sell their nft's from various contract addresses
+- Inherits NFTStorage/NFTStorage1155
+- On sale, sale metadata is collected and stored in NFTStorage/NFTStorage1155
 
-## Bid
+## Bid/Bid1155
 
-- Inherits NFTFactory
+- Inherits NFTFactory/NFTFactory1155
 - Provides auction functionality for the nft's
 
-## TokenFactory
+## TokenFactory/TokenFActory1155
 
-- Inherits Bid
-- Provides functions for a user to create a collection and stores the collection details in NFTStorage
+- Inherits Bid/Bid1155
+- Provide functions for a user to create collections and store the collection details in NFTStorage/NFTStorage1155

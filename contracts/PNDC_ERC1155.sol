@@ -18,6 +18,7 @@ contract PNDC_ERC1155 is ERC1155, Ownable, ERC1155Supply {
 
     Counters.Counter private _tokenIdCounter;
     mapping(uint256 => LibShare.Share[]) public royaltiesByTokenId;
+    mapping(uint256 => string) public _uris;
 
     constructor(string memory uri) ERC1155(uri) {}
 
@@ -25,16 +26,22 @@ contract PNDC_ERC1155 is ERC1155, Ownable, ERC1155Supply {
         _setURI(newuri);
     }
 
+    function setTokenUri(string memory _uri, uint256 _tokenId) public {
+        _uris[_tokenId] = _uri;
+    }
+
     function mint(
         address account,
         uint256 amount,
         bytes memory data,
+        string memory uri,
         LibShare.Share[] memory royalties
     ) public {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _mint(account, tokenId, amount, data);
         _setRoyaltiesByTokenId(tokenId, royalties);
+        setTokenUri(uri, tokenId);
     }
 
     function _setRoyaltiesByTokenId(
