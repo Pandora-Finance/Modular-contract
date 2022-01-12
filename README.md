@@ -26,3 +26,15 @@
 
         truffle develop
         test
+
+## Deploy contracts to the BSC testnet
+
+- Create a .env file storing a metamask private key and bscscan api(To verify contracts after deployment)
+- the .env stucture should be as follows:
+
+        PK=<Private Key>
+        BSC_API=<API key>
+
+- Then run the truffle migration command
+
+        truffle migrate --reset --network testnet
