@@ -1,34 +1,28 @@
-# Pandora Protocol
-## 
-##
-##
-## NFTStorage/NFTStorage1155
+# Pandora Protocol Contracts
 
-- Contracts that store data of sales, collections, and important mappings.
+## Features
 
-## PNDC_ERC721/PNDC_ERC1155
+- Mint NFT items
+- Sell NFT's
+- Auction NFT's
+- Create NFT collections
 
-- Contracts for minting of nft's
-- Also stores royalties of the nft's.
+## Installation
 
-## TokenERC721/TokenERC1155
+- Clone the repository
+- Install the dependancies 
 
-- The boilerplate code for all the collection contracts that will be deployed
-- One can mint their collection nft's
-- Also store collection royalties and individual nft royalties
+        npm install
 
-## NFTFactory/NFTFActory1155
+## Compile Contracts
 
-- The main contracts where one can buy and sell their nft's from various contract addresses
-- Inherits NFTStorage/NFTStorage1155
-- On sale, sale metadata is collected and stored in NFTStorage/NFTStorage1155
+- Run the truffle compilation 
 
-## Bid/Bid1155
+        truffle compile --all
 
-- Inherits NFTFactory/NFTFactory1155
-- Provides auction functionality for the nft's
+## Test Contracts
 
-## TokenFactory/TokenFActory1155
+- Run the local truffle develpment environment and run the test cases within the environment
 
-- Inherits Bid/Bid1155
-- Provide functions for a user to create collections and store the collection details in NFTStorage/NFTStorage1155
+        truffle develop
+        test
