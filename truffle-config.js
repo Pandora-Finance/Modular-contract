@@ -22,6 +22,10 @@
 // //
 //  const fs = require('fs');
 // const mnemonic = fs.readFileSync(".env").toString().trim();
+require('dotenv').config();
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+const mnemonic = process.env.PK
+const bscapi = process.env.BSC_API
 
 module.exports = {
   /**
@@ -33,6 +37,9 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
+  api_keys: {
+    bscscan: bscapi
+  },
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
@@ -42,11 +49,18 @@ module.exports = {
     //
     development: {
      host: "127.0.0.1",     // Localhost (default: none)
-     port: 7545,            // Standard Ethereum port (default: none)
+     port: 9545,            // Standard Ethereum port (default: none)
      network_id: "5777",       // Any network (default: none)
-     gas: 9500000,
+     gas: 6721975,
      gasPrice: 20000000000
     },
+    testnet: {
+      provider: () => new HDWalletProvider(mnemonic, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      network_id: 97,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    }
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
@@ -84,7 +98,7 @@ module.exports = {
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
-    // timeout: 100000
+    before_timeout: 220000 // <--- units in ms
   },
 
   // Configure your compilers
@@ -123,6 +137,7 @@ module.exports = {
     // }
   // }
   plugins: [
-    'truffle-contract-size'
+    'truffle-contract-size',
+    'truffle-plugin-verify'
   ]
 };
