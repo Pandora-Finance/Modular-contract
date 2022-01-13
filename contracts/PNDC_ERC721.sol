@@ -27,12 +27,13 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         address to,
         string memory uri,
         LibShare.Share[] memory royalties
-    ) public {
+    ) public returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
         _setRoyaltiesByTokenId(tokenId, royalties);
+        return tokenId;
     }
 
     function batchMint(
