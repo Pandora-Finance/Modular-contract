@@ -18,7 +18,7 @@ contract NFTBid is NFTFactoryContract {
         require(_tokenMeta[_saleId].bidSale == true);
         require(block.timestamp <= _tokenMeta[_saleId].bidEndTime);
         require(
-            _tokenMeta[_saleId].price < msg.value
+            _tokenMeta[_saleId].price + ((5 * _tokenMeta[_saleId].price) / 100) <= msg.value
         );
         //  require(_timeOfAuction[_saleId] >= block.timestamp,"Auction Over");
 
