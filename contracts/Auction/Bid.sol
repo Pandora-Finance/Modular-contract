@@ -23,6 +23,7 @@ contract NFTBid is NFTFactoryContract {
         //  require(_timeOfAuction[_saleId] >= block.timestamp,"Auction Over");
 
         LibBid.BidOrder memory bid = LibBid.BidOrder(
+            Bids[_saleId].length,
             _saleId,
             _tokenMeta[_saleId].currentOwner,
             msg.sender,
@@ -47,6 +48,7 @@ contract NFTBid is NFTFactoryContract {
         ERC721(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId);
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
+            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _price,
