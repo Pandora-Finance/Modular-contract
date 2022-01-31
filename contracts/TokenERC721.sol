@@ -56,6 +56,12 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         }
     }
 
+    function burn(uint256 _tokenId) public {
+        require(msg.sender == ownerOf(_tokenId));
+
+        _burn(_tokenId);
+    }
+
     function setRoyaltiesByTokenId(
         uint256 _tokenId,
         RoyaltiesSet memory royaltiesSet
