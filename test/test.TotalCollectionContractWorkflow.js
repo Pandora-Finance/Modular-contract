@@ -72,7 +72,7 @@ contract("TokenFactory", (accounts) => {
     let balance2 = await web3.eth.getBalance(accounts[3]);
 
     assert.equal(BigNumber(balance2).minus(BigNumber(_balance2)) , (700 * 600) / 10000)
-    assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (700 * 9400) / 10000)
+    assert.equal(BigNumber(balance1).minus(BigNumber(_balance1)), (700 * 9300) / 10000)
 
     meta = await instance._tokenMeta(1);
     assert.equal(meta.status, false);

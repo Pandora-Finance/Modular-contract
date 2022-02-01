@@ -17,5 +17,6 @@ contract NFTV1Storage is Initializable{
     Counters.Counter public collectionIdTracker;
     Counters.Counter internal _tokenIdTracker;
     address internal PNDCAddress;
+    address internal feeAddress;
 }
 

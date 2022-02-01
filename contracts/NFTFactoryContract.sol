@@ -56,8 +56,9 @@ contract NFTFactoryContract is
         LibMeta.TokenMeta memory tok = LibMeta.transfer(_tokenMeta[_saleId],msg.sender);
         _tokenMeta[_saleId] = tok;
 
-        uint sum = msg.value;
-        uint val = msg.value;
+        uint256 sum = msg.value;
+        uint256 val = msg.value;
+        uint256 fee = msg.value / 100;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
             uint256 amount = (royalties[i].value * val) / 10000;
@@ -66,7 +67,8 @@ contract NFTFactoryContract is
             sum = sum - amount;
         }
 
-        payable(meta.currentOwner).transfer(sum);
+        payable(meta.currentOwner).transfer(sum - fee);
+        payable(feeAddress).transfer(fee);
         ERC721(meta.collectionAddress).safeTransferFrom(address(this), msg.sender, meta.tokenId);
 
     }
@@ -114,5 +116,4 @@ contract NFTFactoryContract is
             );
 
     }
-
 }
