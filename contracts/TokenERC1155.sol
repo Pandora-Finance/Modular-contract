@@ -41,6 +41,12 @@ contract TokenERC1155 is ERC1155, Ownable, ERC1155Supply {
         setTokenUri(_uri, id);
     }
 
+    function burn(address _from, uint256 _id, uint256 _amount) public {
+        require(balanceOf(_from, _id) >= _amount);
+
+        _burn(_from, _id, _amount);
+    }
+
     function setRoyaltiesByTokenId(
         uint256 _tokenId,
         RoyaltiesSet memory royaltiesSet

@@ -82,6 +82,7 @@ contract NFTFactoryContract is
         ERC721(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId);
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
+            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _price,

@@ -60,6 +60,21 @@ module.exports = {
       confirmations: 10,
       timeoutBlocks: 200,
       skipDryRun: true
+    },
+    rinkeby: {
+      provider: function() { 
+       return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/6b3f79427eb54a588292c9203ad47a65");
+      },
+      network_id: 4,
+      gas: 20000000,
+      gasPrice: 10000000000,
+    },
+    ropsten: {
+      provider: function() {
+        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/6b3f79427eb54a588292c9203ad47a65")
+      },
+      network_id: 3,
+      gas: 7000000      //make sure this gas allocation isn't over 4M, which is the max
     }
     // Another network with more advanced options...
     // advanced: {
