@@ -52,6 +52,7 @@ contract NFTFactoryContract1155 is
 
         uint256 sum = msg.value;
         uint256 val = msg.value;
+        uint256 fee = msg.value / 100;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
             uint256 amount = (royalties[i].value * val ) / 10000;
@@ -59,7 +60,8 @@ contract NFTFactoryContract1155 is
             sum = sum - amount;
         }
 
-        payable(_tokenMeta[_saleId].currentOwner).transfer(sum);
+        payable(_tokenMeta[_saleId].currentOwner).transfer(sum - fee);
+        payable(feeAddress).transfer(fee);
         ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
             address(this), 
             msg.sender, 

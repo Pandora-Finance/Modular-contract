@@ -27,7 +27,7 @@ module.exports = async function (deployer) {
   await deployer.deploy(PNDC_ERC721, "NFT", "NFT");
   var pndc = await PNDC_ERC721.deployed();
   
-  await deployProxy(TokenFactory, [pndc.address], {
+  await deployProxy(TokenFactory, [pndc.address, "0xE850d0221BE67813D47EfF75E62684E679623093"], {
     kind: "uups",
     unsafeAllow: ["external-library-linking"],
   }).then((res) => console.log("Factory", res.address));
@@ -44,7 +44,7 @@ module.exports = async function (deployer) {
   await deployer.deploy(PNDC_ERC1155, "NFT");
   var pndc1155 = await PNDC_ERC1155.deployed();
   
-  await deployProxy(TokenFactory1155, [pndc1155.address], {
+  await deployProxy(TokenFactory1155, [pndc1155.address, "0xE850d0221BE67813D47EfF75E62684E679623093"], {
     kind: "uups",
     unsafeAllow: ["external-library-linking"],
   }).then((res) => console.log("Factory1155", res.address));

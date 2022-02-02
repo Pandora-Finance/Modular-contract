@@ -12,10 +12,11 @@ contract TokenFactory1155 is UUPSUpgradeable, NFTBid1155 {
 
     event ERC1155Deployed(address indexed _from, address _tokenAddress);
 
-    function initialize(address _address) initializer public {
+    function initialize(address _address, address _feeAddress) initializer public {
         PNDC1155Address = _address;
         NFTFactoryContract1155.initialize();
         __UUPSUpgradeable_init();
+        feeAddress = _feeAddress;
     }
 
     function deployERC1155(

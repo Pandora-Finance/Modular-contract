@@ -94,6 +94,7 @@ contract NFTBid is NFTFactoryContract {
         );
 
          uint sum = Bids[_saleId][_bidOrderID].price;
+         uint256 fee = Bids[_saleId][_bidOrderID].price / 100;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
             uint256 amount = (royalties[i].value * Bids[_saleId][_bidOrderID].price) / 10000;
@@ -102,7 +103,8 @@ contract NFTBid is NFTFactoryContract {
             sum = sum - amount;
         }
 
-        payable(msg.sender).transfer(sum);
+        payable(msg.sender).transfer(sum - fee);
+        payable(feeAddress).transfer(fee);
 
         emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }
