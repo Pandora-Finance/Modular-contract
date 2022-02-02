@@ -6,6 +6,7 @@
 - Sell NFT's
 - Auction NFT's
 - Create NFT collections
+- TBD (coming many more)
 
 ## Installation
 
