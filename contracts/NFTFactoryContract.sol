@@ -26,6 +26,7 @@ contract NFTFactoryContract is
     }
 
     event TokenMetaReturn(LibMeta.TokenMeta data, uint256 id);
+    event NFTBought(address seller, address buyer, uint256 saleId);
 
     modifier onlyOwnerOfToken(address _collectionAddress, uint256 _tokenId) {
         require(msg.sender == ERC721(_collectionAddress).ownerOf(_tokenId));
@@ -70,7 +71,7 @@ contract NFTFactoryContract is
         payable(meta.currentOwner).transfer(sum - fee);
         payable(feeAddress).transfer(fee);
         ERC721(meta.collectionAddress).safeTransferFrom(address(this), msg.sender, meta.tokenId);
-
+        emit NFTBought(meta.currentOwner, msg.sender, _saleId);
     }
 
     function sellNFT(address _collectionAddress, uint256 _tokenId, uint256 _price) 

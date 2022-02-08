@@ -26,6 +26,7 @@ contract NFTFactoryContract1155 is
     }
 
     event TokenMetaReturn(LibMeta1155.TokenMeta data, uint256 id);
+    event NFTBought(address seller, address buyer, uint256 saleId, uint256 amount);
 
 
 // Change in BuyNFT LibMeta Function
@@ -68,6 +69,12 @@ contract NFTFactoryContract1155 is
             _tokenMeta[_saleId].tokenId, 
             _amount, 
             ""
+            );
+        emit NFTBought(
+            _tokenMeta[_saleId].currentOwner, 
+            msg.sender, 
+            _saleId,
+            _amount
             );
 
     }

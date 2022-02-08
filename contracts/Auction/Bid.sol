@@ -8,7 +8,6 @@ import "../Libraries/LibMeta.sol";
 contract NFTBid is NFTFactoryContract {
     event BidOrderReturn(LibBid.BidOrder bid);
     event BidExecuted(uint256 price);
-    event AuctionStarted(uint time);
 
     using Counters for Counters.Counter;
 
