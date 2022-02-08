@@ -85,6 +85,7 @@ contract NFTFactoryContract1155 is
         ERC1155(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId, _amount, "");
 
         LibMeta1155.TokenMeta memory meta = LibMeta1155.TokenMeta(
+            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _amount,

@@ -21,7 +21,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         require(_tokenMeta[_saleId].numberOfTokens >= _amount);
 
         LibBid1155.BidOrder memory bid = LibBid1155.BidOrder(
-            _saleId,
+            Bids[_saleId].length,
             _amount,
             _tokenMeta[_saleId].currentOwner,
             msg.sender,
@@ -46,6 +46,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         ERC1155(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId, _amount, "");
 
         LibMeta1155.TokenMeta memory meta = LibMeta1155.TokenMeta(
+            _tokenIdTracker.current(),
             _collectionAddress,
             _tokenId,
             _amount,

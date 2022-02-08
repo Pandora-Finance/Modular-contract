@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 library LibMeta1155 {
 
     struct TokenMeta {
+        uint256 saleId;
         address collectionAddress;
         uint256 tokenId;
         uint256 numberOfTokens;
