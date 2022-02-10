@@ -1,4 +1,4 @@
-const { deployProxy } = require("@openzeppelin/truffle-upgrades");
+const { deployProxy, upgradeProxy } = require("@openzeppelin/truffle-upgrades");
 
 const NFTBid = artifacts.require("NFTBid");
 const NFTBid1155 = artifacts.require("NFTBid1155");
