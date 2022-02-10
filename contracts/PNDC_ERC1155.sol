@@ -26,7 +26,7 @@ contract PNDC_ERC1155 is ERC1155, Ownable, ERC1155Supply {
         _setURI(newuri);
     }
 
-    function setTokenUri(string memory _uri, uint256 _tokenId) public {
+    function setTokenUri(string memory _uri, uint256 _tokenId) internal {
         _uris[_tokenId] = _uri;
     }
 

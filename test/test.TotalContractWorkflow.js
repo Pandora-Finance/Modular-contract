@@ -1,6 +1,9 @@
 var BigNumber = require('big-number');
+const { deployProxy, upgradeProxy } = require("@openzeppelin/truffle-upgrades");
+const LibERC721 = artifacts.require("LibERC721");
 const PNDC_ERC721 = artifacts.require("PNDC_ERC721");
 const TokenFactory = artifacts.require("TokenFactory");
+const TokenFactoryV2 = artifacts.require("TokenFactoryV2")
 contract("PNDC_ERC721", (accounts) => {
   contract("TokenFactory", (accounts) => { 
  describe("Testing Contract Workflow ", function(){ 
@@ -134,6 +137,34 @@ contract("PNDC_ERC721", (accounts) => {
     res = await instance2._tokenMeta(4);
     assert.equal(res.status, false);
 
+  });
+
+  it("testing contract upgradeability", async () => {
+    const instance = await PNDC_ERC721.deployed();
+    const instance2 = await TokenFactory.deployed(); 
+
+    const address1 = instance2.address;
+    console.log(address1)
+
+    const lib = await LibERC721.new();
+    await TokenFactoryV2.detectNetwork();
+    await TokenFactoryV2.link('LibERC721', lib.address);
+
+    await upgradeProxy(instance2.address, TokenFactoryV2, {
+      unsafeAllow: ["external-library-linking"]
+    })
+
+    const instance3 = await TokenFactoryV2.at(instance2.address);
+
+    let s = await instance3.print();
+    console.log(s);
+
+    const address2 = instance3.address;
+    assert.equal(await address1, await address2);
+    console.log(address2);
+
+    let m = await instance3._tokenMeta(1);
+    console.log(m);
   });
 
 
