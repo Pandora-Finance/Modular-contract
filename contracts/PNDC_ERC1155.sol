@@ -46,7 +46,7 @@ contract PNDC_ERC1155 is ERC1155, Ownable, ERC1155Supply {
     }
 
     function burn(address _from, uint256 _id, uint256 _amount) public {
-        require(balanceOf(_from, _id) >= _amount);
+        require(_from == msg.sender || isApprovedForAll(_from, _msgSender()));
 
         _burn(_from, _id, _amount);
     }
