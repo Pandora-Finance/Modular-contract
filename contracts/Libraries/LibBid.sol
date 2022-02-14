@@ -11,4 +11,13 @@ library LibBid {
         bool withdrawn;
     }
 
+    struct OrderBook {
+        uint256 bidId;
+        uint256 saleId;
+        address sellerAddress;
+        address buyerAddress;
+        uint256 price;
+        bool withdrawn;
+    }
+
 }

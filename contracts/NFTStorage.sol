@@ -11,6 +11,7 @@ contract NFTV1Storage is Initializable{
 
     mapping(uint256 => LibMeta.TokenMeta) public _tokenMeta;
     mapping(uint256 => LibBid.BidOrder[]) public Bids;
+    mapping(uint256 => LibBid.OrderBook[]) public OrderBook;
     mapping(uint256 => LibCollection.CollectionMeta) public collections;
     mapping(address => uint256[]) public ownerToCollections;
     mapping(address => address) public collectionToOwner;

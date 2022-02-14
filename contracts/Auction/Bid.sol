@@ -8,6 +8,8 @@ import "../Libraries/LibMeta.sol";
 contract NFTBid is NFTFactoryContract {
     event BidOrderReturn(LibBid.BidOrder bid);
     event BidExecuted(uint256 price);
+    event PlacedOfferReturn(LibBid.OrderBook offer);
+    event OfferAccepted(uint256 price);
 
     using Counters for Counters.Counter;
 
@@ -17,7 +19,9 @@ contract NFTBid is NFTFactoryContract {
         require(_tokenMeta[_saleId].bidSale == true);
         require(block.timestamp <= _tokenMeta[_saleId].bidEndTime);
         require(
-            _tokenMeta[_saleId].price + ((5 * _tokenMeta[_saleId].price) / 100) <= msg.value
+            _tokenMeta[_saleId].price +
+                ((5 * _tokenMeta[_saleId].price) / 100) <=
+                msg.value
         );
         //  require(_timeOfAuction[_saleId] >= block.timestamp,"Auction Over");
 
@@ -35,16 +39,20 @@ contract NFTBid is NFTFactoryContract {
         emit BidOrderReturn(bid);
     }
 
-    function SellNFT_byBid(address _collectionAddress, uint256 _tokenId, uint256 _price, uint256 _bidTime)
-        public
-        onlyOwnerOfToken(_collectionAddress, _tokenId)
-        nonReentrant
-    {
-
-         _tokenIdTracker.increment();
+    function SellNFT_byBid(
+        address _collectionAddress,
+        uint256 _tokenId,
+        uint256 _price,
+        uint256 _bidTime
+    ) public onlyOwnerOfToken(_collectionAddress, _tokenId) nonReentrant {
+        _tokenIdTracker.increment();
 
         //needs approval on frontend
-        ERC721(_collectionAddress).safeTransferFrom(msg.sender, address(this), _tokenId);
+        ERC721(_collectionAddress).safeTransferFrom(
+            msg.sender,
+            address(this),
+            _tokenId
+        );
 
         LibMeta.TokenMeta memory meta = LibMeta.TokenMeta(
             _tokenIdTracker.current(),
@@ -59,10 +67,9 @@ contract NFTBid is NFTFactoryContract {
             _msgSender()
         );
 
-         _tokenMeta[_tokenIdTracker.current()] = meta;
+        _tokenMeta[_tokenIdTracker.current()] = meta;
 
         emit TokenMetaReturn(meta, _tokenIdTracker.current());
-      
     }
 
     function executeBidOrder(uint256 _saleId, uint256 _bidOrderID)
@@ -73,14 +80,15 @@ contract NFTBid is NFTFactoryContract {
         require(Bids[_saleId][_bidOrderID].withdrawn == false);
         require(_tokenMeta[_saleId].status == true);
 
-         LibShare.Share[] memory royalties;
+        LibShare.Share[] memory royalties;
 
-        if(_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
-            royalties = PNDC_ERC721(PNDCAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
-        }
-
-        else {
-            royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+        if (_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
+            royalties = PNDC_ERC721(PNDCAddress).getRoyalties(
+                _tokenMeta[_saleId].tokenId
+            );
+        } else {
+            royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress)
+                .getRoyalties(_tokenMeta[_saleId].tokenId);
         }
 
         _tokenMeta[_saleId].status = false;
@@ -92,11 +100,12 @@ contract NFTBid is NFTFactoryContract {
             _tokenMeta[_saleId].tokenId
         );
 
-         uint sum = Bids[_saleId][_bidOrderID].price;
-         uint256 fee = Bids[_saleId][_bidOrderID].price / 100;
+        uint256 sum = Bids[_saleId][_bidOrderID].price;
+        uint256 fee = Bids[_saleId][_bidOrderID].price / 100;
 
-        for(uint256 i = 0; i < royalties.length; i ++) {
-            uint256 amount = (royalties[i].value * Bids[_saleId][_bidOrderID].price) / 10000;
+        for (uint256 i = 0; i < royalties.length; i++) {
+            uint256 amount = (royalties[i].value *
+                Bids[_saleId][_bidOrderID].price) / 10000;
             address payable receiver = royalties[i].account;
             receiver.transfer(amount);
             sum = sum - amount;
@@ -108,18 +117,94 @@ contract NFTBid is NFTFactoryContract {
         emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }
 
-    function withdrawBidMoney(uint256 _saleId, uint256 _bidId) public nonReentrant{
-        require(
-            msg.sender != _tokenMeta[_saleId].currentOwner
-        );
+    function withdrawBidMoney(uint256 _saleId, uint256 _bidId)
+        public
+        nonReentrant
+    {
+        require(msg.sender != _tokenMeta[_saleId].currentOwner);
         // BidOrder[] memory bids = Bids[_tokenId];
 
-        require(
-            Bids[_saleId][_bidId].buyerAddress == msg.sender
-        );
+        require(Bids[_saleId][_bidId].buyerAddress == msg.sender);
         require(Bids[_saleId][_bidId].withdrawn == false);
         if (payable(msg.sender).send(Bids[_saleId][_bidId].price)) {
             Bids[_saleId][_bidId].withdrawn = true;
+        } else {
+            revert("No Money left!");
+        }
+    }
+
+    function PlaceOffer(uint256 _saleId) public payable {
+        require(_tokenMeta[_saleId].currentOwner != _msgSender());
+        require(_tokenMeta[_saleId].status == true);
+        LibBid.OrderBook memory offer = LibBid.OrderBook(
+            OrderBook[_saleId].length,
+            _saleId,
+            _tokenMeta[_saleId].currentOwner,
+            msg.sender,
+            msg.value,
+            false
+        );
+        OrderBook[_saleId].push(offer);
+        _tokenMeta[_saleId].price == msg.value;
+
+        emit PlacedOfferReturn(offer);
+    }
+
+    function acceptOffer(uint256 _saleId, uint256 _offerOrderID)
+        public
+        nonReentrant
+    {
+        require(msg.sender == _tokenMeta[_saleId].currentOwner);
+        require(OrderBook[_saleId][_offerOrderID].withdrawn == false);
+        require(_tokenMeta[_saleId].status == true);
+
+        LibShare.Share[] memory royalties;
+
+        if (_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
+            royalties = PNDC_ERC721(PNDCAddress).getRoyalties(
+                _tokenMeta[_saleId].tokenId
+            );
+        } else {
+            royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress)
+                .getRoyalties(_tokenMeta[_saleId].tokenId);
+        }
+
+        _tokenMeta[_saleId].status = false;
+        OrderBook[_saleId][_offerOrderID].withdrawn == true;
+
+        ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
+            address(this),
+            OrderBook[_saleId][_offerOrderID].buyerAddress,
+            _tokenMeta[_saleId].tokenId
+        );
+
+        uint256 sum = OrderBook[_saleId][_offerOrderID].price;
+        uint256 fee = OrderBook[_saleId][_offerOrderID].price / 100;
+
+        for (uint256 i = 0; i < royalties.length; i++) {
+            uint256 amount = (royalties[i].value *
+                OrderBook[_saleId][_offerOrderID].price) / 10000;
+            address payable receiver = royalties[i].account;
+            receiver.transfer(amount);
+            sum = sum - amount;
+        }
+
+        payable(msg.sender).transfer(sum - fee);
+        payable(feeAddress).transfer(fee);
+
+        emit OfferAccepted(OrderBook[_saleId][_offerOrderID].price);
+    }
+
+    function withdrawOfferMoney(uint256 _saleId, uint256 _offerId)
+        public
+        nonReentrant
+    {
+        require(msg.sender != _tokenMeta[_saleId].currentOwner);
+        require(OrderBook[_saleId][_offerId].buyerAddress == msg.sender);
+        require(OrderBook[_saleId][_offerId].withdrawn == false);
+
+        if (payable(msg.sender).send(OrderBook[_saleId][_offerId].price)) {
+            OrderBook[_saleId][_offerId].withdrawn = true;
         } else {
             revert("No Money left!");
         }
