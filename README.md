@@ -39,3 +39,7 @@
 - Then run the truffle migration command
 
         truffle migrate --reset --network testnet
+        
+        
+        
+   We are in the phase of auditing. Please consider it as beta version.
