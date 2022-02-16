@@ -41,7 +41,7 @@ contract NFTBid is NFTFactoryContract {
         onlyOwnerOfToken(_collectionAddress, _tokenId)
         nonReentrant
     {
-
+        require(_collectionAddress != address(0));
          _tokenIdTracker.increment();
 
         //needs approval on frontend
