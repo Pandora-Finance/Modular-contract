@@ -31,7 +31,7 @@ contract NFTBid is NFTFactoryContract {
             false
         );
         Bids[_saleId].push(bid);
-        _tokenMeta[_saleId].price == msg.value;
+        _tokenMeta[_saleId].price = msg.value;
 
         emit BidOrderReturn(bid);
     }
@@ -41,7 +41,7 @@ contract NFTBid is NFTFactoryContract {
         onlyOwnerOfToken(_collectionAddress, _tokenId)
         nonReentrant
     {
-
+        require(_collectionAddress != address(0));
          _tokenIdTracker.increment();
 
         //needs approval on frontend
@@ -85,7 +85,7 @@ contract NFTBid is NFTFactoryContract {
         }
 
         _tokenMeta[_saleId].status = false;
-        Bids[_saleId][_bidOrderID].withdrawn == true;
+        Bids[_saleId][_bidOrderID].withdrawn = true;
 
         ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
             address(this),
