@@ -48,9 +48,9 @@ contract NFTFactoryContract is
             royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
         }
 
-        require(meta.status == true);
+        require(meta.status);
         require(msg.sender != address(0) && msg.sender != meta.currentOwner);
-        require(meta.bidSale == false);
+        require(!meta.bidSale);
         require(msg.value >= meta.price);
 
         LibMeta.TokenMeta memory tok = LibMeta.transfer(_tokenMeta[_saleId],msg.sender);
