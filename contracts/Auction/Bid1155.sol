@@ -114,6 +114,8 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         require(Bids[_saleId][_bidId].withdrawn == false);
         if (payable(msg.sender).send(Bids[_saleId][_bidId].price)) {
             Bids[_saleId][_bidId].withdrawn = true;
-        } 
+        } else {
+            revert("No Money left!");
+        }
     }
 }
