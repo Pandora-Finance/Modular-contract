@@ -45,7 +45,7 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 _totalNft,
         string[] memory _uri,
         RoyaltiesSet memory royaltiesSet
-    ) external {
+    ) external onlyOwner{
         require(_totalNft <= 15, "Minting more than 15 Nfts are not allowe");
         require(
             _totalNft == _uri.length,
