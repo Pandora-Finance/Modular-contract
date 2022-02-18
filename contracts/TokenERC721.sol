@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Libraries/LibShare.sol";
 
-contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract TokenERC721 is ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     struct RoyaltiesSet {
