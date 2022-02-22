@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Libraries/LibShare.sol";
 
-contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract TokenERC721 is ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     struct RoyaltiesSet {
@@ -45,7 +45,7 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 _totalNft,
         string[] memory _uri,
         RoyaltiesSet memory royaltiesSet
-    ) external {
+    ) external onlyOwner{
         require(_totalNft <= 15, "Minting more than 15 Nfts are not allowe");
         require(
             _totalNft == _uri.length,
