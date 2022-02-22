@@ -13,10 +13,14 @@ contract TokenFactory is UUPSUpgradeable, NFTBid {
     event ERC721Deployed(address indexed _from, address _tokenAddress);
 
     function initialize(address _address, address _feeAddress) initializer public {
+        require(_address != address(0));
+        require(_feeAddress != address(0));
         PNDCAddress = _address;
-        NFTFactoryContract.initialize();
         __UUPSUpgradeable_init();
         feeAddress = _feeAddress;
+        OwnableUpgradeable.__Ownable_init();
+        ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
+        ERC721HolderUpgradeable.__ERC721Holder_init();
     }
 
     function deployERC721(
