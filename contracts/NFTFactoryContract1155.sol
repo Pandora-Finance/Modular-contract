@@ -75,7 +75,8 @@ contract NFTFactoryContract1155 is
     function sellNFT(address _collectionAddress, uint256 _tokenId, uint256 _price, uint256 _amount) 
     public 
     nonReentrant
-    {
+    {   
+        require(_collectionAddress != address(0));
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
         require(bal >= _amount);
 
