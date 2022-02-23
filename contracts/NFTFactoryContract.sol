@@ -34,12 +34,12 @@ contract NFTFactoryContract is
         
         LibShare.Share[] memory royalties;
 
-        if(_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
-            royalties = PNDC_ERC721(PNDCAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+        if(meta.collectionAddress == PNDCAddress) {
+            royalties = PNDC_ERC721(PNDCAddress).getRoyalties(meta.tokenId);
         }
 
         else {
-            royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+            royalties = TokenERC721(meta.collectionAddress).getRoyalties(meta.tokenId);
         }
 
         require(meta.status);
