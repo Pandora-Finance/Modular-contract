@@ -74,8 +74,8 @@ contract("PNDC_ERC721", (accounts) => {
     const instance2 = await TokenFactory.deployed();      
     
     await instance2.Bid(2,{from:accounts[2],value:1000});
-    await instance2.Bid(2,{from:accounts[3],value:1000});
-    await instance2.Bid(2,{from:accounts[4],value:1000});
+    await instance2.Bid(2,{from:accounts[3],value:1100});
+    await instance2.Bid(2,{from:accounts[4],value:1200});
     
     result = await instance2.Bids(2,2)
     assert.equal(result.buyerAddress, accounts[4]);

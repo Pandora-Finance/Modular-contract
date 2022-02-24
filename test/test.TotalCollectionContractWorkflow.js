@@ -97,8 +97,8 @@ contract("TokenFactory", (accounts) => {
     instance2 = await TokenERC721.at(collectionAddress);          
     
     await instance.Bid(2,{from:accounts[2],value:1000});
-    await instance.Bid(2,{from:accounts[3],value:1000});
-    await instance.Bid(2,{from:accounts[4],value:1000});
+    await instance.Bid(2,{from:accounts[3],value:1100});
+    await instance.Bid(2,{from:accounts[4],value:1200});
     
     result = await instance.Bids(2,2)
     assert.equal(result.buyerAddress, accounts[4]);
