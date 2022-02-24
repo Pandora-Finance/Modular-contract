@@ -19,18 +19,13 @@ contract NFTFactoryContract is
 {
   using Counters for Counters.Counter;
 
-  function initialize() public initializer {
-    OwnableUpgradeable.__Ownable_init();
-    ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
-    ERC721HolderUpgradeable.__ERC721Holder_init();
-  }
 
-  event TokenMetaReturn(LibMeta.TokenMeta data, uint256 id);
+    event TokenMetaReturn(LibMeta.TokenMeta data, uint256 id);
 
-  modifier onlyOwnerOfToken(address _collectionAddress, uint256 _tokenId) {
-    require(msg.sender == ERC721(_collectionAddress).ownerOf(_tokenId));
-    _;
-  }
+    modifier onlyOwnerOfToken(address _collectionAddress, uint256 _tokenId) {
+        require(msg.sender == ERC721(_collectionAddress).ownerOf(_tokenId));
+        _;
+    }
 
   // Change in BuyNFT LibMeta Function
 

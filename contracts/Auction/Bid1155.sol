@@ -82,7 +82,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         }
 
         LibMeta1155.transfer(_tokenMeta[_saleId], Bids[_saleId][_bidOrderID].numberOfTokens);
-        Bids[_saleId][_bidOrderID].withdrawn == true;
+        Bids[_saleId][_bidOrderID].withdrawn = true;
 
         ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
             address(this),
@@ -114,6 +114,8 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         require(Bids[_saleId][_bidId].withdrawn == false);
         if (payable(msg.sender).send(Bids[_saleId][_bidId].price)) {
             Bids[_saleId][_bidId].withdrawn = true;
-        } 
+        } else {
+            revert("No Money left!");
+        }
     }
 }
