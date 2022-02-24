@@ -37,6 +37,9 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         public
         nonReentrant
     {
+        require(_collectionAddress != address(0));
+        require(_price > 0);
+        require(_amount > 0);
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
         require(bal >= _amount);
 
@@ -97,12 +100,12 @@ contract NFTBid1155 is NFTFactoryContract1155 {
 
         for(uint256 i = 0; i < royalties.length; i ++) {
             uint256 amount = (royalties[i].value * Bids[_saleId][_bidOrderID].price) / 10000;
-            royalties[i].account.transfer(amount);
+            royalties[i].account.call{value : amount}("");
             sum = sum - amount;
-        }
+        } 
 
-        payable(msg.sender).transfer(sum - fee);
-        payable(feeAddress).transfer(fee);
+        payable(msg.sender).call{value : (sum - fee)}("");
+        payable(feeAddress).call{value : fee}("");
 
         emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }
@@ -112,7 +115,8 @@ contract NFTBid1155 is NFTFactoryContract1155 {
             Bids[_saleId][_bidId].buyerAddress == msg.sender
         );
         require(Bids[_saleId][_bidId].withdrawn == false);
-        if (payable(msg.sender).send(Bids[_saleId][_bidId].price)) {
+        (bool success, ) = payable(msg.sender).call{value : Bids[_saleId][_bidId].price}("");
+        if (success) {
             Bids[_saleId][_bidId].withdrawn = true;
         } else {
             revert("No Money left!");
