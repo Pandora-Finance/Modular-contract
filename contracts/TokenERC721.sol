@@ -34,10 +34,10 @@ contract TokenERC721 is ERC721Enumerable, ERC721URIStorage, Ownable {
         RoyaltiesSet memory royaltiesSet
     ) public onlyOwner returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
+        setRoyaltiesByTokenId(tokenId, royaltiesSet);
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        setRoyaltiesByTokenId(tokenId, royaltiesSet);
         return tokenId;
     }
 
@@ -96,6 +96,7 @@ contract TokenERC721 is ERC721Enumerable, ERC721URIStorage, Ownable {
         LibShare.Share[] storage royaltiesArr,
         LibShare.Share[] memory royalties
     ) internal {
+        require(royalties.length <= 10);
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {
             require(
