@@ -83,6 +83,7 @@ contract TokenERC1155 is Ownable, ERC1155Supply {
         LibShare.Share[] storage royaltiesArr,
         LibShare.Share[] memory royalties
     ) internal {
+        require(royalties.length <= 10);
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {
             require(
