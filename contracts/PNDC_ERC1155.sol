@@ -38,9 +38,9 @@ contract PNDC_ERC1155 is ERC1155, Ownable, ERC1155Supply {
         LibShare.Share[] memory royalties
     ) public returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
+        _setRoyaltiesByTokenId(tokenId, royalties);
         _tokenIdCounter.increment();
         _mint(account, tokenId, amount, data);
-        _setRoyaltiesByTokenId(tokenId, royalties);
         setTokenUri(uri, tokenId);
         return tokenId;
     }
@@ -55,6 +55,7 @@ contract PNDC_ERC1155 is ERC1155, Ownable, ERC1155Supply {
         uint256 _tokenId,
         LibShare.Share[] memory royalties
     ) internal {
+        require(royalties.length <= 10);
         delete royaltiesByTokenId[_tokenId];
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {

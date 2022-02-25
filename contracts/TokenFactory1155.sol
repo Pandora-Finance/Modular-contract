@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.0;
 
 import "./Auction/Bid1155.sol";
 import "./Libraries/LibERC1155.sol";
@@ -13,10 +13,14 @@ contract TokenFactory1155 is UUPSUpgradeable, NFTBid1155 {
     event ERC1155Deployed(address indexed _from, address _tokenAddress);
 
     function initialize(address _address, address _feeAddress) initializer public {
+        require(_address != address(0));
+        require(_feeAddress != address(0));
         PNDC1155Address = _address;
-        NFTFactoryContract1155.initialize();
         __UUPSUpgradeable_init();
         feeAddress = _feeAddress;
+        OwnableUpgradeable.__Ownable_init();
+        ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
+        ERC1155HolderUpgradeable.__ERC1155Holder_init();
     }
 
     function deployERC1155(

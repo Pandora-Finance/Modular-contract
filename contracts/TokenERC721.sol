@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Libraries/LibShare.sol";
 
-contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract TokenERC721 is ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     struct RoyaltiesSet {
@@ -34,10 +34,10 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         RoyaltiesSet memory royaltiesSet
     ) public onlyOwner returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
+        setRoyaltiesByTokenId(tokenId, royaltiesSet);
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        setRoyaltiesByTokenId(tokenId, royaltiesSet);
         return tokenId;
     }
 
@@ -45,7 +45,7 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 _totalNft,
         string[] memory _uri,
         RoyaltiesSet memory royaltiesSet
-    ) external {
+    ) external onlyOwner{
         require(_totalNft <= 15, "Minting more than 15 Nfts are not allowe");
         require(
             _totalNft == _uri.length,
@@ -96,6 +96,7 @@ contract TokenERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         LibShare.Share[] storage royaltiesArr,
         LibShare.Share[] memory royalties
     ) internal {
+        require(royalties.length <= 10);
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {
             require(

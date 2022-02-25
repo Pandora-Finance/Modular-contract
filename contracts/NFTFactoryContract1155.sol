@@ -19,18 +19,18 @@ contract NFTFactoryContract1155 is
 {
     using Counters for Counters.Counter;
 
-    function initialize() initializer public {
-        OwnableUpgradeable.__Ownable_init();
-        ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
-        ERC1155HolderUpgradeable.__ERC1155Holder_init();
-    }
+    // function initialize() initializer public {
+    //     OwnableUpgradeable.__Ownable_init();
+    //     ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
+    //     ERC1155HolderUpgradeable.__ERC1155Holder_init();
+    // }
 
     event TokenMetaReturn(LibMeta1155.TokenMeta data, uint256 id);
 
 
 // Change in BuyNFT LibMeta Function
 
-    function BuyNFT(uint256 _saleId, uint256 _amount) public payable nonReentrant {
+    function BuyNFT(uint256 _saleId, uint256 _amount) external payable nonReentrant {
     
         LibShare.Share[] memory royalties;
 
@@ -73,9 +73,10 @@ contract NFTFactoryContract1155 is
     }
 
     function sellNFT(address _collectionAddress, uint256 _tokenId, uint256 _price, uint256 _amount) 
-    public 
+    external 
     nonReentrant
-    {
+    {   
+        require(_collectionAddress != address(0));
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
         require(bal >= _amount);
 
@@ -101,7 +102,7 @@ contract NFTFactoryContract1155 is
 
     }
 
-    function cancelSale(uint256 _saleId) public nonReentrant{
+    function cancelSale(uint256 _saleId) external nonReentrant{
 
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
         require(_tokenMeta[_saleId].status == true);

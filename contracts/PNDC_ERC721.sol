@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -27,12 +27,12 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         address to,
         string memory uri,
         LibShare.Share[] memory royalties
-    ) public returns(uint256){
+    ) external returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
+        _setRoyaltiesByTokenId(tokenId, royalties);
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        _setRoyaltiesByTokenId(tokenId, royalties);
         return tokenId;
     }
 
@@ -47,11 +47,11 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
             "uri array length should be equal to _totalNFT"
         );
         for (uint256 i = 0; i < _totalNft; i++) {
-            safeMint(msg.sender, _uri[i], royaltiesSet[i]);
+            this.safeMint(msg.sender, _uri[i], royaltiesSet[i]);
         }
     }
 
-    function burn(uint256 _tokenId) public {
+    function burn(uint256 _tokenId) external {
         require(msg.sender == ownerOf(_tokenId));
 
         _burn(_tokenId);
@@ -61,6 +61,7 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 _tokenId,
         LibShare.Share[] memory royalties
     ) internal {
+        require(royalties.length <= 10);
         delete royaltiesByTokenId[_tokenId];
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {

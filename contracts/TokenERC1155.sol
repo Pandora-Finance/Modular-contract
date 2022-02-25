@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "./Libraries/LibShare.sol";
 
-contract TokenERC1155 is ERC1155, Ownable, ERC1155Supply {
+contract TokenERC1155 is Ownable, ERC1155Supply {
     event RoyaltiesSetForCollection(LibShare.Share[] royalties);
     event RoyaltiesSetForTokenId(uint256 tokenId, LibShare.Share[] royalties);
 
@@ -84,6 +83,7 @@ contract TokenERC1155 is ERC1155, Ownable, ERC1155Supply {
         LibShare.Share[] storage royaltiesArr,
         LibShare.Share[] memory royalties
     ) internal {
+        require(royalties.length <= 10);
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {
             require(
@@ -106,7 +106,7 @@ contract TokenERC1155 is ERC1155, Ownable, ERC1155Supply {
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    ) internal override(ERC1155, ERC1155Supply) {
+    ) internal override(ERC1155Supply) {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 }
