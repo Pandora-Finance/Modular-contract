@@ -12,7 +12,7 @@ contract NFTBid is NFTFactoryContract {
 
     using Counters for Counters.Counter;
 
-    function Bid(uint256 _saleId) public payable {
+    function Bid(uint256 _saleId) external payable {
         require(_tokenMeta[_saleId].currentOwner != _msgSender());
         require(_tokenMeta[_saleId].status == true);
         require(_tokenMeta[_saleId].bidSale == true);
@@ -37,7 +37,7 @@ contract NFTBid is NFTFactoryContract {
     }
 
     function SellNFT_byBid(address _collectionAddress, uint256 _tokenId, uint256 _price, uint256 _bidTime)
-        public
+        external
         onlyOwnerOfToken(_collectionAddress, _tokenId)
         nonReentrant
     {
@@ -67,7 +67,7 @@ contract NFTBid is NFTFactoryContract {
     }
 
     function executeBidOrder(uint256 _saleId, uint256 _bidOrderID)
-        public
+        external
         nonReentrant
     {
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
@@ -109,7 +109,7 @@ contract NFTBid is NFTFactoryContract {
         emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }
 
-    function withdrawBidMoney(uint256 _saleId, uint256 _bidId) public nonReentrant{
+    function withdrawBidMoney(uint256 _saleId, uint256 _bidId) external nonReentrant{
         require(
             msg.sender != _tokenMeta[_saleId].currentOwner
         );

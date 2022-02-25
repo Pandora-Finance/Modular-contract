@@ -30,7 +30,7 @@ contract NFTFactoryContract1155 is
 
 // Change in BuyNFT LibMeta Function
 
-    function BuyNFT(uint256 _saleId, uint256 _amount) public payable nonReentrant {
+    function BuyNFT(uint256 _saleId, uint256 _amount) external payable nonReentrant {
     
         LibShare.Share[] memory royalties;
 
@@ -73,7 +73,7 @@ contract NFTFactoryContract1155 is
     }
 
     function sellNFT(address _collectionAddress, uint256 _tokenId, uint256 _price, uint256 _amount) 
-    public 
+    external 
     nonReentrant
     {   
         require(_collectionAddress != address(0));
@@ -102,7 +102,7 @@ contract NFTFactoryContract1155 is
 
     }
 
-    function cancelSale(uint256 _saleId) public nonReentrant{
+    function cancelSale(uint256 _saleId) external nonReentrant{
 
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
         require(_tokenMeta[_saleId].status == true);

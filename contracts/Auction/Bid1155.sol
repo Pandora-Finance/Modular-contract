@@ -12,7 +12,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
 
     using Counters for Counters.Counter;
 
-    function Bid(uint256 _saleId, uint256 _amount) public payable {
+    function Bid(uint256 _saleId, uint256 _amount) external payable {
         require(_tokenMeta[_saleId].currentOwner != msg.sender);
         require(_tokenMeta[_saleId].status == true);
         require(_tokenMeta[_saleId].bidSale == true);
@@ -34,7 +34,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
     }
 
     function SellNFT_byBid(address _collectionAddress, uint256 _tokenId, uint256 _price, uint256 _amount)
-        public
+        external
         nonReentrant
     {
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
@@ -63,7 +63,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
     }
 
     function executeBidOrder(uint256 _saleId, uint256 _bidOrderID)
-        public
+        external
         nonReentrant
     {   
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
@@ -107,7 +107,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         emit BidExecuted(Bids[_saleId][_bidOrderID].price);
     }
 
-    function withdrawBidMoney(uint256 _saleId, uint256 _bidId) public nonReentrant{
+    function withdrawBidMoney(uint256 _saleId, uint256 _bidId) external nonReentrant{
         require(
             Bids[_saleId][_bidId].buyerAddress == msg.sender
         );

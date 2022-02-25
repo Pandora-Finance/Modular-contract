@@ -27,7 +27,7 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         address to,
         string memory uri,
         LibShare.Share[] memory royalties
-    ) public returns(uint256){
+    ) external returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
@@ -47,11 +47,11 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
             "uri array length should be equal to _totalNFT"
         );
         for (uint256 i = 0; i < _totalNft; i++) {
-            safeMint(msg.sender, _uri[i], royaltiesSet[i]);
+            this.safeMint(msg.sender, _uri[i], royaltiesSet[i]);
         }
     }
 
-    function burn(uint256 _tokenId) public {
+    function burn(uint256 _tokenId) external {
         require(msg.sender == ownerOf(_tokenId));
 
         _burn(_tokenId);
