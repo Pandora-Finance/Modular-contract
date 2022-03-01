@@ -13,12 +13,12 @@ contract NFTBid1155 is NFTFactoryContract1155 {
     using Counters for Counters.Counter;
 
     function Bid(uint256 _saleId, uint256 _amount) external payable {
-        require(_tokenMeta[_saleId].currentOwner != msg.sender);
-        require(_tokenMeta[_saleId].status == true);
-        require(_tokenMeta[_saleId].bidSale == true);
+        require(_tokenMeta[_saleId].currentOwner != msg.sender,"3");
+        require(_tokenMeta[_saleId].status == true,"2");
+        require(_tokenMeta[_saleId].bidSale == true,"4");
         require(msg.value % _amount == 0);
-        require(msg.value / _amount >= _tokenMeta[_saleId].price);
-        require(_tokenMeta[_saleId].numberOfTokens >= _amount);
+        require(msg.value / _amount >= _tokenMeta[_saleId].price,"22");
+        require(_tokenMeta[_saleId].numberOfTokens >= _amount,"7");
 
         LibBid1155.BidOrder memory bid = LibBid1155.BidOrder(
             _saleId,
@@ -38,7 +38,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         nonReentrant
     {
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
-        require(bal >= _amount);
+        require(bal >= _amount,"7");
 
          _tokenIdTracker.increment();
 
@@ -66,10 +66,10 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         external
         nonReentrant
     {   
-        require(msg.sender == _tokenMeta[_saleId].currentOwner);
-        require(Bids[_saleId][_bidOrderID].withdrawn == false);
-        require(_tokenMeta[_saleId].status == true);
-        require(_tokenMeta[_saleId].numberOfTokens >= Bids[_saleId][_bidOrderID].numberOfTokens);
+        require(msg.sender == _tokenMeta[_saleId].currentOwner,"1");
+        require(Bids[_saleId][_bidOrderID].withdrawn == false,"20");
+        require(_tokenMeta[_saleId].status == true,"2");
+        require(_tokenMeta[_saleId].numberOfTokens >= Bids[_saleId][_bidOrderID].numberOfTokens,"7");
 
          LibShare.Share[] memory royalties;
 
@@ -109,9 +109,9 @@ contract NFTBid1155 is NFTFactoryContract1155 {
 
     function withdrawBidMoney(uint256 _saleId, uint256 _bidId) external nonReentrant{
         require(
-            Bids[_saleId][_bidId].buyerAddress == msg.sender
+            Bids[_saleId][_bidId].buyerAddress == msg.sender,"21"
         );
-        require(Bids[_saleId][_bidId].withdrawn == false);
+        require(Bids[_saleId][_bidId].withdrawn == false,"20");
         if (payable(msg.sender).send(Bids[_saleId][_bidId].price)) {
             Bids[_saleId][_bidId].withdrawn = true;
         } else {

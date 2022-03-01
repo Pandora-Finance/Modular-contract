@@ -13,13 +13,13 @@ contract NFTBid is NFTFactoryContract {
   using Counters for Counters.Counter;
 
   function Bid(uint256 _saleId) external payable {
-    require(_tokenMeta[_saleId].currentOwner != _msgSender());
-    require(_tokenMeta[_saleId].status == true);
-    require(_tokenMeta[_saleId].bidSale == true);
-    require(block.timestamp <= _tokenMeta[_saleId].bidEndTime);
+    require(_tokenMeta[_saleId].currentOwner != _msgSender(),"3");
+    require(_tokenMeta[_saleId].status == true,"2");
+    require(_tokenMeta[_saleId].bidSale == true,"4");
+    require(block.timestamp <= _tokenMeta[_saleId].bidEndTime,"18");
     require(
       _tokenMeta[_saleId].price + ((5 * _tokenMeta[_saleId].price) / 100) <=
-        msg.value
+        msg.value,"19"
     );
     //  require(_timeOfAuction[_saleId] >= block.timestamp,"Auction Over");
 
@@ -43,7 +43,7 @@ contract NFTBid is NFTFactoryContract {
     uint256 _price,
     uint256 _bidTime
   ) external onlyOwnerOfToken(_collectionAddress, _tokenId) nonReentrant {
-    require(_collectionAddress != address(0));
+    require(_collectionAddress != address(0),"9");
     _tokenIdTracker.increment();
 
     //needs approval on frontend
@@ -75,9 +75,9 @@ contract NFTBid is NFTFactoryContract {
     external
     nonReentrant
   {
-    require(msg.sender == _tokenMeta[_saleId].currentOwner);
-    require(Bids[_saleId][_bidOrderID].withdrawn == false);
-    require(_tokenMeta[_saleId].status == true);
+    require(msg.sender == _tokenMeta[_saleId].currentOwner,"1");
+    require(Bids[_saleId][_bidOrderID].withdrawn == false,"20");
+    require(_tokenMeta[_saleId].status == true,"2");
 
     LibShare.Share[] memory royalties;
 
@@ -120,11 +120,11 @@ contract NFTBid is NFTFactoryContract {
     external
     nonReentrant
   {
-    require(msg.sender != _tokenMeta[_saleId].currentOwner);
+    require(msg.sender != _tokenMeta[_saleId].currentOwner,"3");
     // BidOrder[] memory bids = Bids[_tokenId];
 
-    require(Bids[_saleId][_bidId].buyerAddress == msg.sender);
-    require(Bids[_saleId][_bidId].withdrawn == false);
+    require(Bids[_saleId][_bidId].buyerAddress == msg.sender,"21");
+    require(Bids[_saleId][_bidId].withdrawn == false,"20");
     (bool success, ) = payable(msg.sender).call{
       value: Bids[_saleId][_bidId].price
     }("");
