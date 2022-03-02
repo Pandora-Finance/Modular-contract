@@ -47,10 +47,10 @@ The table below lists all possible reasons for errors in a contract call that mi
 | No   |      Error      |  Reason |
 |:----------:|:-------------|:------|
 | 1 | Not an owner of token | Should be an owner of token |
-| 2 | Token not for sale | Put token up for sale |
+| 2 | Token not for sale | Token should be up for sale |
 | 3 | Buyer is owner of token | Buyer of token can't be the owner of token |
-| 4 | Token is not put on bid Sale | Put token on bid sale |
-| 5 | Price entered is lower than base price of token | Provide price greater than the base price of token |
+| 4 | Token is not put on bid Sale | Token should be up for bid sale |
+| 5 | Price entered is lower than base price of token | Price should be greater than the base price of token |
 | 6 | Buyer is an owner of token | Buyer of token can't be an owner of token |
 | 7 | Quantity greater than number of tokens | Number of tokens should be greater or equal to quantity |
 | 8 | Quantity less than (price x quantity)) | Quantity should be greater or equal to (price x quantity)) |
@@ -61,8 +61,8 @@ The table below lists all possible reasons for errors in a contract call that mi
 | 13 | Royalty recipient is not present | Royalty recipient should be present |
 | 14 | Royalty value is less or equal to 0 | Royalty value should be greater than 0 |
 | 15 | Sum of Royalties > 100% | Sum of Royalties should be < 100% |
-| 16 | Not a valid address | Provide a valid address |
-| 17 | Not a valid fee address | Provide a valid fee address |
+| 16 | Not a valid address | Address should be valid |
+| 17 | Not a valid fee address | Fee address should be valid |
 | 18 | Bid end time exceeded | Timestamp greater than bid end time |
 | 19 | Bid price is less than base price | Bid price should be minimum 5% more than the base price |
 | 20 | Bid withdrawn for order Id | Bid should not be withdrawn to execute order for particular order Id |
