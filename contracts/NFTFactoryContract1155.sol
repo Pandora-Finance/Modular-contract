@@ -9,7 +9,6 @@ import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpg
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./TokenERC1155.sol";
 import "./PNDC_ERC1155.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract NFTFactoryContract1155 is
     OwnableUpgradeable,
