@@ -31,22 +31,23 @@ contract NFTFactoryContract1155 is
 // Change in BuyNFT LibMeta Function
 
     function BuyNFT(uint256 _saleId, uint256 _amount) external payable nonReentrant {
+        LibMeta1155.TokenMeta memory meta = _tokenMeta[_saleId];
     
         LibShare.Share[] memory royalties;
 
-        if(_tokenMeta[_saleId].collectionAddress == PNDC1155Address) {
-            royalties = PNDC_ERC1155(PNDC1155Address).getRoyalties(_tokenMeta[_saleId].tokenId);
+        if(meta.collectionAddress == PNDC1155Address) {
+            royalties = PNDC_ERC1155(PNDC1155Address).getRoyalties(meta.tokenId);
         }
 
         else {
-            royalties = TokenERC1155(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
+            royalties = TokenERC1155(meta.collectionAddress).getRoyalties(meta.tokenId);
         }
 
-        require(_tokenMeta[_saleId].status == true);
-        require(msg.sender != address(0) && msg.sender != _tokenMeta[_saleId].currentOwner);
-        require(_tokenMeta[_saleId].bidSale == false);
-        require(_tokenMeta[_saleId].numberOfTokens >= _amount);
-        require(msg.value >= (_tokenMeta[_saleId].price * _amount));
+        require(meta.status == true);
+        require(msg.sender != address(0) && msg.sender != meta.currentOwner);
+        require(meta.bidSale == false);
+        require(meta.numberOfTokens >= _amount);
+        require(msg.value >= (meta.price * _amount));
 
         LibMeta1155.transfer(_tokenMeta[_saleId], _amount);
 
@@ -60,12 +61,12 @@ contract NFTFactoryContract1155 is
             sum = sum - amount;
         }
 
-        payable(_tokenMeta[_saleId].currentOwner).transfer(sum - fee);
+        payable(meta.currentOwner).transfer(sum - fee);
         payable(feeAddress).transfer(fee);
-        ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
+        ERC1155(meta.collectionAddress).safeTransferFrom(
             address(this), 
             msg.sender, 
-            _tokenMeta[_saleId].tokenId, 
+            meta.tokenId, 
             _amount, 
             ""
             );
