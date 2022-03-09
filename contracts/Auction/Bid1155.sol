@@ -35,6 +35,9 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         external
         nonReentrant
     {
+        require(_collectionAddress != address(0));
+        require(_price > 0);
+        require(_amount > 0);
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
         require(bal >= _amount);
 
@@ -98,7 +101,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
             uint256 amount = (royalties[i].value * bids.price) / 10000;
             royalties[i].account.call{value: amount}("");
             sum = sum - amount;
-        }
+        } 
 
         payable(msg.sender).call{value: (sum - fee)}("");
         payable(feeAddress).call{value: fee}("");
