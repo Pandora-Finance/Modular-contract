@@ -6,7 +6,7 @@ import "../NFTFactoryContract.sol";
 contract NFTBid is NFTFactoryContract {
   event BidOrderReturn(LibBid.BidOrder bid);
   event BidExecuted(uint256 price);
-  event AuctionStarted(uint256 time);
+  // event AuctionStarted(uint256 time);
 
   using Counters for Counters.Counter;
 
@@ -104,8 +104,8 @@ contract NFTBid is NFTFactoryContract {
     for (uint256 i = 0; i < royalties.length; i++) {
       uint256 amount = (royalties[i].value * bids.price) /
         10000;
-      address payable receiver = royalties[i].account;
-      receiver.call{ value: amount }("");
+      // address payable receiver = royalties[i].account;
+      payable(royalties[i].account).call{ value: amount }("");
       sum = sum - amount;
     }
 

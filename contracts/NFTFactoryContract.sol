@@ -33,13 +33,13 @@ contract NFTFactoryContract is
 
     LibShare.Share[] memory royalties;
 
-    if (_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
+    if (meta.collectionAddress == PNDCAddress) {
       royalties = PNDC_ERC721(PNDCAddress).getRoyalties(
-        _tokenMeta[_saleId].tokenId
+        meta.tokenId
       );
     } else {
-      royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress)
-        .getRoyalties(_tokenMeta[_saleId].tokenId);
+      royalties = TokenERC721(meta.collectionAddress)
+        .getRoyalties(meta.tokenId);
     }
 
     require(meta.status);
@@ -48,7 +48,7 @@ contract NFTFactoryContract is
     require(msg.value >= meta.price);
 
     LibMeta.TokenMeta memory tok = LibMeta.transfer(
-      _tokenMeta[_saleId],
+      meta,
       msg.sender
     );
     _tokenMeta[_saleId] = tok;
@@ -59,8 +59,8 @@ contract NFTFactoryContract is
 
     for (uint256 i = 0; i < royalties.length; i++) {
       uint256 amount = (royalties[i].value * val) / 10000;
-      address payable receiver = royalties[i].account;
-      receiver.call{ value: amount }("");
+      // address payable receiver = royalties[i].account;
+      payable(royalties[i].account).call{ value: amount }("");
       sum = sum - amount;
     }
 
@@ -78,6 +78,7 @@ contract NFTFactoryContract is
     uint256 _tokenId,
     uint256 _price
   ) external onlyOwnerOfToken(_collectionAddress, _tokenId) nonReentrant {
+    // require(msg.sender == ERC721(_collectionAddress).ownerOf(_tokenId));
     _tokenIdTracker.increment();
 
     //needs approval on frontend
