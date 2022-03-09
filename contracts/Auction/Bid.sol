@@ -105,12 +105,15 @@ contract NFTBid is NFTFactoryContract {
       uint256 amount = (royalties[i].value * bids.price) /
         10000;
       // address payable receiver = royalties[i].account;
-      payable(royalties[i].account).call{ value: amount }("");
+      (bool royalSuccess, ) = payable(royalties[i].account).call{ value: amount }("");
+      require(royalSuccess, "Transfer failed");
       sum = sum - amount;
     }
 
-    payable(msg.sender).call{ value: (sum - fee) }("");
-    payable(feeAddress).call{ value: fee }("");
+    (bool isSuccess, ) = payable(msg.sender).call{ value: (sum - fee) }("");
+    require(isSuccess, "Transfer failed");
+    (bool feeSuccess, ) = payable(feeAddress).call{ value: fee }("");
+    require(feeSuccess, "Fee Transfer failed");
 
     emit BidExecuted(bids.price);
   }
