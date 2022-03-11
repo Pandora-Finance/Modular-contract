@@ -16,12 +16,11 @@ library LibMeta {
         address currentOwner;
     }
 
-   function transfer(TokenMeta memory token, address _to ) internal pure returns(TokenMeta memory){
+   function transfer(TokenMeta storage token, address _to ) internal{
         token.currentOwner = _to;
         token.status = false;
         token.directSale = false ;
         token.bidSale = false ;
 
-        return token;
     } 
 }
