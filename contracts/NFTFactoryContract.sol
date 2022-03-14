@@ -47,11 +47,7 @@ contract NFTFactoryContract is
     require(!meta.bidSale);
     require(msg.value >= meta.price);
 
-    LibMeta.TokenMeta memory tok = LibMeta.transfer(
-      meta,
-      msg.sender
-    );
-    _tokenMeta[_saleId] = tok;
+    LibMeta.transfer(_tokenMeta[_saleId], msg.sender);
 
     uint256 sum = msg.value;
     uint256 val = msg.value;
