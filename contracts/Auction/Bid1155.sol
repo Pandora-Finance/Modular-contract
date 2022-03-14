@@ -73,15 +73,11 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         require(_tokenMeta[_saleId].status == true);
         require(_tokenMeta[_saleId].numberOfTokens >= bids.numberOfTokens);
 
-         LibShare.Share[] memory royalties;
-
-        if(_tokenMeta[_saleId].collectionAddress == PNDC1155Address) {
-            royalties = PNDC_ERC1155(PNDC1155Address).getRoyalties(_tokenMeta[_saleId].tokenId);
-        }
-
-        else {
-            royalties = TokenERC1155(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
-        }
+        LibShare.Share[] memory royalties = LibRoyalty.retrieveRoyalty(
+            _tokenMeta[_saleId].collectionAddress,
+            PNDC1155Address,
+            _tokenMeta[_saleId].tokenId
+        );
 
         LibMeta1155.transfer(_tokenMeta[_saleId], bids.numberOfTokens);
         bids.withdrawn = true;

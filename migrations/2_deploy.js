@@ -6,12 +6,14 @@ const TokenFactory = artifacts.require("TokenFactory");
 const TokenFactory1155 = artifacts.require("TokenFactory1155");
 const LibBid = artifacts.require("LibBid");
 const LibMeta = artifacts.require("LibMeta");
+const LibRoyalty = artifacts.require("LibRoyalty");
 const LibMeta1155 = artifacts.require("LibMeta1155")
 const LibShare = artifacts.require("LibShare");
 const LibERC721 = artifacts.require("LibERC721");
 const LibERC1155 = artifacts.require("LibERC1155");
 const LibCollection = artifacts.require("LibCollection");
 const NFTFactoryContract = artifacts.require("NFTFactoryContract");
+const NFTFactoryContract1155 = artifacts.require("NFTFactoryContract1155");
 const NFTStorage = artifacts.require("NFTV1Storage");
 const NFTStorage1155 = artifacts.require("NFTV1Storage1155");
 const PNDC_ERC721 = artifacts.require("PNDC_ERC721");
@@ -20,6 +22,9 @@ const PNDC_ERC1155 = artifacts.require("PNDC_ERC1155");
 module.exports = async function (deployer) {
   await deployer.deploy(LibMeta);
   await deployer.link(LibMeta, [NFTStorage, NFTBid, TokenFactory]);
+
+  await deployer.deploy(LibRoyalty);
+  await deployer.link(LibRoyalty, [NFTFactoryContract, NFTBid, TokenFactory]);
 
   await deployer.deploy(LibERC721);
   await deployer.link(LibERC721, TokenFactory);
@@ -40,6 +45,9 @@ module.exports = async function (deployer) {
 
   await deployer.deploy(LibERC1155);
   await deployer.link(LibERC1155, TokenFactory1155);
+
+  await deployer.deploy(LibRoyalty);
+  await deployer.link(LibRoyalty, [NFTFactoryContract1155, NFTBid1155, TokenFactory1155]);
 
   await deployer.deploy(PNDC_ERC1155, "NFT");
   var pndc1155 = await PNDC_ERC1155.deployed();
