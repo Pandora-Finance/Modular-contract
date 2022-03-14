@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./NFTStorage1155.sol";
 import "./Libraries/LibShare.sol";
+import "./Libraries/LibRoyalty.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
@@ -32,15 +33,11 @@ contract NFTFactoryContract1155 is
     function BuyNFT(uint256 _saleId, uint256 _amount) external payable nonReentrant {
         LibMeta1155.TokenMeta memory meta = _tokenMeta[_saleId];
     
-        LibShare.Share[] memory royalties;
-
-        if(meta.collectionAddress == PNDC1155Address) {
-            royalties = PNDC_ERC1155(PNDC1155Address).getRoyalties(meta.tokenId);
-        }
-
-        else {
-            royalties = TokenERC1155(meta.collectionAddress).getRoyalties(meta.tokenId);
-        }
+        LibShare.Share[] memory royalties = LibRoyalty.retrieveRoyalty(
+            meta.collectionAddress,
+            PNDC1155Address,
+            meta.tokenId
+        );
 
         require(meta.status == true,"2");
         require(msg.sender != address(0) && msg.sender != meta.currentOwner,"3");

@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "../NFTFactoryContract.sol";
+import "../Libraries/LibRoyalty.sol";
+
 
 contract NFTBid is NFTFactoryContract {
   event BidOrderReturn(LibBid.BidOrder bid);
@@ -78,16 +80,11 @@ contract NFTBid is NFTFactoryContract {
     require(bids.withdrawn == false,"20");
     require(_tokenMeta[_saleId].status == true,"2");
 
-    LibShare.Share[] memory royalties;
-
-    if (_tokenMeta[_saleId].collectionAddress == PNDCAddress) {
-      royalties = PNDC_ERC721(PNDCAddress).getRoyalties(
-        _tokenMeta[_saleId].tokenId
-      );
-    } else {
-      royalties = TokenERC721(_tokenMeta[_saleId].collectionAddress)
-        .getRoyalties(_tokenMeta[_saleId].tokenId);
-    }
+    LibShare.Share[] memory royalties = LibRoyalty.retrieveRoyalty(
+      _tokenMeta[_saleId].collectionAddress,
+      PNDCAddress,
+      _tokenMeta[_saleId].tokenId
+    );
 
     _tokenMeta[_saleId].status = false;
     bids.withdrawn = true;
