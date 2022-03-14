@@ -2,8 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "../NFTFactoryContract1155.sol";
-import "../Libraries/LibBid1155.sol";
-import "../Libraries/LibMeta1155.sol";
 
 contract NFTBid1155 is NFTFactoryContract1155 {
     event BidOrderReturn(LibBid1155.BidOrder bid);
@@ -37,6 +35,9 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         external
         nonReentrant
     {
+        require(_collectionAddress != address(0));
+        require(_price > 0);
+        require(_amount > 0);
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
         require(bal >= _amount,"7");
 
@@ -66,10 +67,11 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         external
         nonReentrant
     {   
+        LibBid1155.BidOrder memory bids = Bids[_saleId][_bidOrderID];
         require(msg.sender == _tokenMeta[_saleId].currentOwner,"1");
-        require(Bids[_saleId][_bidOrderID].withdrawn == false,"20");
+        require(bids.withdrawn == false,"20");
         require(_tokenMeta[_saleId].status == true,"2");
-        require(_tokenMeta[_saleId].numberOfTokens >= Bids[_saleId][_bidOrderID].numberOfTokens,"7");
+        require(_tokenMeta[_saleId].numberOfTokens >= bids.numberOfTokens,"7");
 
          LibShare.Share[] memory royalties;
 
@@ -81,39 +83,44 @@ contract NFTBid1155 is NFTFactoryContract1155 {
             royalties = TokenERC1155(_tokenMeta[_saleId].collectionAddress).getRoyalties(_tokenMeta[_saleId].tokenId);
         }
 
-        LibMeta1155.transfer(_tokenMeta[_saleId], Bids[_saleId][_bidOrderID].numberOfTokens);
-        Bids[_saleId][_bidOrderID].withdrawn = true;
+        LibMeta1155.transfer(_tokenMeta[_saleId], bids.numberOfTokens);
+        bids.withdrawn = true;
 
         ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
             address(this),
-            Bids[_saleId][_bidOrderID].buyerAddress,
+            bids.buyerAddress,
             _tokenMeta[_saleId].tokenId,
-            Bids[_saleId][_bidOrderID].numberOfTokens,
+            bids.numberOfTokens,
             ""
         );
 
-        uint sum = Bids[_saleId][_bidOrderID].price;
-        uint fee = Bids[_saleId][_bidOrderID].price / 100;
+        uint sum = bids.price;
+        uint fee = bids.price / 100;
 
         for(uint256 i = 0; i < royalties.length; i ++) {
-            uint256 amount = (royalties[i].value * Bids[_saleId][_bidOrderID].price) / 10000;
-            royalties[i].account.transfer(amount);
+            uint256 amount = (royalties[i].value * bids.price) / 10000;
+            royalties[i].account.call{value: amount}("");
             sum = sum - amount;
-        }
+        } 
 
-        payable(msg.sender).transfer(sum - fee);
-        payable(feeAddress).transfer(fee);
+        payable(msg.sender).call{value: (sum - fee)}("");
+        payable(feeAddress).call{value: fee}("");
 
-        emit BidExecuted(Bids[_saleId][_bidOrderID].price);
+        emit BidExecuted(bids.price);
     }
 
     function withdrawBidMoney(uint256 _saleId, uint256 _bidId) external nonReentrant{
+        LibBid1155.BidOrder memory bids = Bids[_saleId][_bidId];
         require(
-            Bids[_saleId][_bidId].buyerAddress == msg.sender,"21"
+            bids.buyerAddress == msg.sender,
+            "21"
         );
-        require(Bids[_saleId][_bidId].withdrawn == false,"20");
-        if (payable(msg.sender).send(Bids[_saleId][_bidId].price)) {
-            Bids[_saleId][_bidId].withdrawn = true;
+        require(bids.withdrawn == false,"20");
+        (bool success, ) = payable(msg.sender).call{
+            value: bids.price
+        }("");
+        if (success) {
+            bids.withdrawn = true;
         } else {
             revert("No Money left!");
         }

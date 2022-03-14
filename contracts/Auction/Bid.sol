@@ -2,13 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "../NFTFactoryContract.sol";
-import "../Libraries/LibBid.sol";
-import "../Libraries/LibMeta.sol";
 
 contract NFTBid is NFTFactoryContract {
   event BidOrderReturn(LibBid.BidOrder bid);
   event BidExecuted(uint256 price);
-  event AuctionStarted(uint256 time);
+  // event AuctionStarted(uint256 time);
 
   using Counters for Counters.Counter;
 
@@ -75,8 +73,9 @@ contract NFTBid is NFTFactoryContract {
     external
     nonReentrant
   {
+    LibBid.BidOrder memory bids = Bids[_saleId][_bidOrderID];
     require(msg.sender == _tokenMeta[_saleId].currentOwner,"1");
-    require(Bids[_saleId][_bidOrderID].withdrawn == false,"20");
+    require(bids.withdrawn == false,"20");
     require(_tokenMeta[_saleId].status == true,"2");
 
     LibShare.Share[] memory royalties;
@@ -91,29 +90,29 @@ contract NFTBid is NFTFactoryContract {
     }
 
     _tokenMeta[_saleId].status = false;
-    Bids[_saleId][_bidOrderID].withdrawn = true;
+    bids.withdrawn = true;
 
     ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
       address(this),
-      Bids[_saleId][_bidOrderID].buyerAddress,
+      bids.buyerAddress,
       _tokenMeta[_saleId].tokenId
     );
 
-    uint256 sum = Bids[_saleId][_bidOrderID].price;
-    uint256 fee = Bids[_saleId][_bidOrderID].price / 100;
+    uint256 sum = bids.price;
+    uint256 fee = bids.price / 100;
 
     for (uint256 i = 0; i < royalties.length; i++) {
-      uint256 amount = (royalties[i].value * Bids[_saleId][_bidOrderID].price) /
+      uint256 amount = (royalties[i].value * bids.price) /
         10000;
-      address payable receiver = royalties[i].account;
-      receiver.call{ value: amount }("");
+      // address payable receiver = royalties[i].account;
+      payable(royalties[i].account).call{ value: amount }("");
       sum = sum - amount;
     }
 
     payable(msg.sender).call{ value: (sum - fee) }("");
     payable(feeAddress).call{ value: fee }("");
 
-    emit BidExecuted(Bids[_saleId][_bidOrderID].price);
+    emit BidExecuted(bids.price);
   }
 
   function withdrawBidMoney(uint256 _saleId, uint256 _bidId)
@@ -122,14 +121,14 @@ contract NFTBid is NFTFactoryContract {
   {
     require(msg.sender != _tokenMeta[_saleId].currentOwner,"3");
     // BidOrder[] memory bids = Bids[_tokenId];
-
-    require(Bids[_saleId][_bidId].buyerAddress == msg.sender,"21");
-    require(Bids[_saleId][_bidId].withdrawn == false,"20");
+    LibBid.BidOrder memory bids = Bids[_saleId][_bidId];
+    require(bids.buyerAddress == msg.sender,"21");
+    require(bids.withdrawn == false,"20");
     (bool success, ) = payable(msg.sender).call{
-      value: Bids[_saleId][_bidId].price
+      value: bids.price
     }("");
     if (success) {
-      Bids[_saleId][_bidId].withdrawn = true;
+      bids.withdrawn = true;
     } else {
       revert("No Money left!");
     }
