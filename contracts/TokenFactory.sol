@@ -13,8 +13,8 @@ contract TokenFactory is UUPSUpgradeable, NFTBid {
     event ERC721Deployed(address indexed _from, address _tokenAddress);
 
     function initialize(address _address, address _feeAddress) initializer public {
-        require(_address != address(0));
-        require(_feeAddress != address(0));
+        require(_address != address(0),"16");
+        require(_feeAddress != address(0),"17");
         PNDCAddress = _address;
         __UUPSUpgradeable_init();
         feeAddress = _feeAddress;

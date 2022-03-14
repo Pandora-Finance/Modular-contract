@@ -23,7 +23,7 @@ contract NFTFactoryContract is
     event TokenMetaReturn(LibMeta.TokenMeta data, uint256 id);
 
     modifier onlyOwnerOfToken(address _collectionAddress, uint256 _tokenId) {
-        require(msg.sender == ERC721(_collectionAddress).ownerOf(_tokenId));
+        require(msg.sender == ERC721(_collectionAddress).ownerOf(_tokenId),"1");
         _;
     }
 
@@ -38,10 +38,10 @@ contract NFTFactoryContract is
       meta.tokenId
     );
 
-    require(meta.status);
-    require(msg.sender != address(0) && msg.sender != meta.currentOwner);
-    require(!meta.bidSale);
-    require(msg.value >= meta.price);
+    require(meta.status,"2");
+    require(msg.sender != address(0) && msg.sender != meta.currentOwner,"3");
+    require(!meta.bidSale,"4");
+    require(msg.value >= meta.price,"5");
 
     LibMeta.transfer(_tokenMeta[_saleId], msg.sender);
 
@@ -99,8 +99,8 @@ contract NFTFactoryContract is
   }
 
   function cancelSale(uint256 _saleId) external nonReentrant {
-    require(msg.sender == _tokenMeta[_saleId].currentOwner);
-    require(_tokenMeta[_saleId].status == true);
+    require(msg.sender == _tokenMeta[_saleId].currentOwner,"1");
+    require(_tokenMeta[_saleId].status == true,"2");
 
     _tokenMeta[_saleId].status = false;
     ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(

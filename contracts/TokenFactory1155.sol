@@ -13,8 +13,8 @@ contract TokenFactory1155 is UUPSUpgradeable, NFTBid1155 {
     event ERC1155Deployed(address indexed _from, address _tokenAddress);
 
     function initialize(address _address, address _feeAddress) initializer public {
-        require(_address != address(0));
-        require(_feeAddress != address(0));
+        require(_address != address(0),"16");
+        require(_feeAddress != address(0),"17");
         PNDC1155Address = _address;
         __UUPSUpgradeable_init();
         feeAddress = _feeAddress;

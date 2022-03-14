@@ -39,11 +39,11 @@ contract NFTFactoryContract1155 is
             meta.tokenId
         );
 
-        require(meta.status == true);
-        require(msg.sender != address(0) && msg.sender != meta.currentOwner);
-        require(meta.bidSale == false);
-        require(meta.numberOfTokens >= _amount);
-        require(msg.value >= (meta.price * _amount));
+        require(meta.status == true,"2");
+        require(msg.sender != address(0) && msg.sender != meta.currentOwner,"3");
+        require(meta.bidSale == false,"4");
+        require(meta.numberOfTokens >= _amount,"7");
+        require(msg.value >= (meta.price * _amount),"8");
 
         LibMeta1155.transfer(_tokenMeta[_saleId], _amount);
 
@@ -73,9 +73,9 @@ contract NFTFactoryContract1155 is
     external 
     nonReentrant
     {   
-        require(_collectionAddress != address(0));
+        require(_collectionAddress != address(0), "9");
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
-        require(bal >= _amount);
+        require(bal >= _amount,"7");
 
         _tokenIdTracker.increment();
 
@@ -101,8 +101,8 @@ contract NFTFactoryContract1155 is
 
     function cancelSale(uint256 _saleId) external nonReentrant{
 
-        require(msg.sender == _tokenMeta[_saleId].currentOwner);
-        require(_tokenMeta[_saleId].status == true);
+        require(msg.sender == _tokenMeta[_saleId].currentOwner,"1");
+        require(_tokenMeta[_saleId].status == true,"2");
 
         _tokenMeta[_saleId].status = false;
         ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(

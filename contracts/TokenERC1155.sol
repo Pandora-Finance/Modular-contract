@@ -41,7 +41,7 @@ contract TokenERC1155 is Ownable, ERC1155Supply {
     }
 
     function burn(address _from, uint256 _id, uint256 _amount) public {
-        require(balanceOf(_from, _id) >= _amount);
+        require(balanceOf(_from, _id) >= _amount,"7");
 
         _burn(_from, _id, _amount);
     }
@@ -83,18 +83,18 @@ contract TokenERC1155 is Ownable, ERC1155Supply {
         LibShare.Share[] storage royaltiesArr,
         LibShare.Share[] memory royalties
     ) internal {
-        require(royalties.length <= 10);
+        require(royalties.length <= 10,"12");
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {
             require(
                 royalties[i].account != address(0x0),
-                "Royalty recipient should be present"
+                "13"
             );
-            require(royalties[i].value != 0, "Royalty value should be > 0");
+            require(royalties[i].value != 0, "14");
             royaltiesArr.push(royalties[i]);
             sumRoyalties += royalties[i].value;
         }
-        require(sumRoyalties < 10000, "Sum of Royalties > 100%");
+        require(sumRoyalties < 10000, "15");
     }
 
     // The following functions are overrides required by Solidity.

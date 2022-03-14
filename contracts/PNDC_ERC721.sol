@@ -41,10 +41,10 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         string[] memory _uri,
         LibShare.Share[][] memory royaltiesSet
     ) external {
-        require(_totalNft <= 15, "Minting more than 15 Nfts are not allowe");
+        require(_totalNft <= 15, "10");
         require(
             _totalNft == _uri.length,
-            "uri array length should be equal to _totalNFT"
+            "11"
         );
         for (uint256 i = 0; i < _totalNft; i++) {
             this.safeMint(msg.sender, _uri[i], royaltiesSet[i]);
@@ -52,7 +52,7 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     function burn(uint256 _tokenId) external {
-        require(msg.sender == ownerOf(_tokenId));
+        require(msg.sender == ownerOf(_tokenId),"1");
 
         _burn(_tokenId);
     }
@@ -61,19 +61,19 @@ contract PNDC_ERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 _tokenId,
         LibShare.Share[] memory royalties
     ) internal {
-        require(royalties.length <= 10);
+        require(royalties.length <= 10,"12");
         delete royaltiesByTokenId[_tokenId];
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {
             require(
                 royalties[i].account != address(0x0),
-                "Royalty recipient should be present"
+                "13"
             );
-            require(royalties[i].value != 0, "Royalty value should be > 0");
+            require(royalties[i].value != 0, "14");
             royaltiesByTokenId[_tokenId].push(royalties[i]);
             sumRoyalties += royalties[i].value;
         }
-        require(sumRoyalties < 10000, "Sum of Royalties > 100%");
+        require(sumRoyalties < 10000, "15");
 
         emit RoyaltiesSetForTokenId(_tokenId, royalties);
     }

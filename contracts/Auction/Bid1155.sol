@@ -11,12 +11,12 @@ contract NFTBid1155 is NFTFactoryContract1155 {
     using Counters for Counters.Counter;
 
     function Bid(uint256 _saleId, uint256 _amount) external payable {
-        require(_tokenMeta[_saleId].currentOwner != msg.sender);
-        require(_tokenMeta[_saleId].status == true);
-        require(_tokenMeta[_saleId].bidSale == true);
+        require(_tokenMeta[_saleId].currentOwner != msg.sender,"3");
+        require(_tokenMeta[_saleId].status == true,"2");
+        require(_tokenMeta[_saleId].bidSale == true,"4");
         require(msg.value % _amount == 0);
-        require(msg.value / _amount >= _tokenMeta[_saleId].price);
-        require(_tokenMeta[_saleId].numberOfTokens >= _amount);
+        require(msg.value / _amount >= _tokenMeta[_saleId].price,"22");
+        require(_tokenMeta[_saleId].numberOfTokens >= _amount,"7");
 
         LibBid1155.BidOrder memory bid = LibBid1155.BidOrder(
             _saleId,
@@ -39,7 +39,7 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         require(_price > 0);
         require(_amount > 0);
         uint256 bal = ERC1155(_collectionAddress).balanceOf(msg.sender, _tokenId);
-        require(bal >= _amount);
+        require(bal >= _amount,"7");
 
          _tokenIdTracker.increment();
 
@@ -68,10 +68,10 @@ contract NFTBid1155 is NFTFactoryContract1155 {
         nonReentrant
     {   
         LibBid1155.BidOrder memory bids = Bids[_saleId][_bidOrderID];
-        require(msg.sender == _tokenMeta[_saleId].currentOwner);
-        require(bids.withdrawn == false);
-        require(_tokenMeta[_saleId].status == true);
-        require(_tokenMeta[_saleId].numberOfTokens >= bids.numberOfTokens);
+        require(msg.sender == _tokenMeta[_saleId].currentOwner,"1");
+        require(bids.withdrawn == false,"20");
+        require(_tokenMeta[_saleId].status == true,"2");
+        require(_tokenMeta[_saleId].numberOfTokens >= bids.numberOfTokens,"7");
 
         LibShare.Share[] memory royalties = LibRoyalty.retrieveRoyalty(
             _tokenMeta[_saleId].collectionAddress,
@@ -108,9 +108,10 @@ contract NFTBid1155 is NFTFactoryContract1155 {
     function withdrawBidMoney(uint256 _saleId, uint256 _bidId) external nonReentrant{
         LibBid1155.BidOrder memory bids = Bids[_saleId][_bidId];
         require(
-            bids.buyerAddress == msg.sender
+            bids.buyerAddress == msg.sender,
+            "21"
         );
-        require(bids.withdrawn == false);
+        require(bids.withdrawn == false,"20");
         (bool success, ) = payable(msg.sender).call{
             value: bids.price
         }("");

@@ -46,10 +46,10 @@ contract TokenERC721 is ERC721Enumerable, ERC721URIStorage, Ownable {
         string[] memory _uri,
         RoyaltiesSet memory royaltiesSet
     ) external onlyOwner{
-        require(_totalNft <= 15, "Minting more than 15 Nfts are not allowe");
+        require(_totalNft <= 15, "10");
         require(
             _totalNft == _uri.length,
-            "uri array length should be equal to _totalNFT"
+            "11"
         );
         for (uint256 i = 0; i < _totalNft; i++) {
             safeMint(msg.sender, _uri[i], royaltiesSet);
@@ -57,7 +57,7 @@ contract TokenERC721 is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     function burn(uint256 _tokenId) public {
-        require(msg.sender == ownerOf(_tokenId));
+        require(msg.sender == ownerOf(_tokenId),"1");
 
         _burn(_tokenId);
     }
@@ -96,18 +96,18 @@ contract TokenERC721 is ERC721Enumerable, ERC721URIStorage, Ownable {
         LibShare.Share[] storage royaltiesArr,
         LibShare.Share[] memory royalties
     ) internal {
-        require(royalties.length <= 10);
+        require(royalties.length <= 10,"12");
         uint256 sumRoyalties = 0;
         for (uint256 i = 0; i < royalties.length; i++) {
             require(
                 royalties[i].account != address(0x0),
-                "Royalty recipient should be present"
+                "13"
             );
-            require(royalties[i].value != 0, "Royalty value should be > 0");
+            require(royalties[i].value != 0, "14");
             royaltiesArr.push(royalties[i]);
             sumRoyalties += royalties[i].value;
         }
-        require(sumRoyalties < 10000, "Sum of Royalties > 100%");
+        require(sumRoyalties < 10000, "15");
     }
 
     // The following functions are overrides required by Solidity.
