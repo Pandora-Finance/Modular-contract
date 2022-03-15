@@ -95,12 +95,15 @@ contract NFTBid1155 is NFTFactoryContract1155 {
 
         for(uint256 i = 0; i < royalties.length; i ++) {
             uint256 amount = (royalties[i].value * bids.price) / 10000;
-            royalties[i].account.call{value: amount}("");
+            (bool royalSuccess, ) = royalties[i].account.call{value: amount}("");
+            require(royalSuccess, "Transfer failed");
             sum = sum - amount;
         } 
 
-        payable(msg.sender).call{value: (sum - fee)}("");
-        payable(feeAddress).call{value: fee}("");
+        (bool isSuccess, ) = payable(msg.sender).call{value: (sum - fee)}("");
+        require(isSuccess, "Transfer failed");
+        (bool feeSuccess, ) = payable(feeAddress).call{value: fee}("");
+        require(feeSuccess, "Fee Transfer failed");
 
         emit BidExecuted(bids.price);
     }

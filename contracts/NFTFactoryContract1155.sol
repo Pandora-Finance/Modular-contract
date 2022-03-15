@@ -53,12 +53,15 @@ contract NFTFactoryContract1155 is
 
         for(uint256 i = 0; i < royalties.length; i ++) {
             uint256 amount = (royalties[i].value * val ) / 10000;
-            royalties[i].account.transfer(amount);
+            (bool royalSuccess, ) = payable(royalties[i].account).call{ value: amount }("");
+            require(royalSuccess, "Transfer failed");
             sum = sum - amount;
         }
 
-        payable(meta.currentOwner).transfer(sum - fee);
-        payable(feeAddress).transfer(fee);
+        (bool isSuccess, ) = payable(meta.currentOwner).call{ value: (sum - fee) }("");
+        require(isSuccess, "Transfer failed");
+        (bool feeSuccess, ) = payable(feeAddress).call{ value: fee }("");
+        require(feeSuccess, "Fee Transfer failed");
         ERC1155(meta.collectionAddress).safeTransferFrom(
             address(this), 
             msg.sender, 
