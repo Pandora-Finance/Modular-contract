@@ -87,7 +87,7 @@ contract NFTBid is NFTFactoryContract {
     );
 
     _tokenMeta[_saleId].status = false;
-    bids.withdrawn = true;
+    Bids[_saleId][_bidOrderID].withdrawn = true;
 
     ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
       address(this),
@@ -128,7 +128,7 @@ contract NFTBid is NFTFactoryContract {
       value: bids.price
     }("");
     if (success) {
-      bids.withdrawn = true;
+      Bids[_saleId][_bidId].withdrawn = true;
     } else {
       revert("No Money left!");
     }
