@@ -39,9 +39,9 @@ contract NFTFactoryContract1155 is
             meta.tokenId
         );
 
-        require(meta.status == true);
+        require(meta.status);
         require(msg.sender != address(0) && msg.sender != meta.currentOwner);
-        require(meta.bidSale == false);
+        require(!meta.bidSale);
         require(meta.numberOfTokens >= _amount);
         require(msg.value >= (meta.price * _amount));
 
@@ -105,7 +105,7 @@ contract NFTFactoryContract1155 is
     function cancelSale(uint256 _saleId) external nonReentrant{
 
         require(msg.sender == _tokenMeta[_saleId].currentOwner);
-        require(_tokenMeta[_saleId].status == true);
+        require(_tokenMeta[_saleId].status);
 
         _tokenMeta[_saleId].status = false;
         ERC1155(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(

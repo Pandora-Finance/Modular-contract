@@ -14,8 +14,8 @@ contract NFTBid is NFTFactoryContract {
 
   function Bid(uint256 _saleId) external payable {
     require(_tokenMeta[_saleId].currentOwner != _msgSender());
-    require(_tokenMeta[_saleId].status == true);
-    require(_tokenMeta[_saleId].bidSale == true);
+    require(_tokenMeta[_saleId].status);
+    require(_tokenMeta[_saleId].bidSale);
     require(block.timestamp <= _tokenMeta[_saleId].bidEndTime);
     require(
       _tokenMeta[_saleId].price + ((5 * _tokenMeta[_saleId].price) / 100) <=
@@ -77,8 +77,8 @@ contract NFTBid is NFTFactoryContract {
   {
     LibBid.BidOrder memory bids = Bids[_saleId][_bidOrderID];
     require(msg.sender == _tokenMeta[_saleId].currentOwner);
-    require(bids.withdrawn == false);
-    require(_tokenMeta[_saleId].status == true);
+    require(!bids.withdrawn);
+    require(_tokenMeta[_saleId].status);
 
     LibShare.Share[] memory royalties = LibRoyalty.retrieveRoyalty(
       _tokenMeta[_saleId].collectionAddress,
@@ -123,7 +123,7 @@ contract NFTBid is NFTFactoryContract {
     // BidOrder[] memory bids = Bids[_tokenId];
     LibBid.BidOrder memory bids = Bids[_saleId][_bidId];
     require(bids.buyerAddress == msg.sender);
-    require(bids.withdrawn == false);
+    require(!bids.withdrawn);
     (bool success, ) = payable(msg.sender).call{
       value: bids.price
     }("");
