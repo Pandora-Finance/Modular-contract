@@ -103,7 +103,7 @@ contract NFTFactoryContract is
 
   function cancelSale(uint256 _saleId) external nonReentrant {
     require(msg.sender == _tokenMeta[_saleId].currentOwner);
-    require(_tokenMeta[_saleId].status == true);
+    require(_tokenMeta[_saleId].status);
 
     _tokenMeta[_saleId].status = false;
     ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
