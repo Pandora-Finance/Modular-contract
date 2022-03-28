@@ -26,7 +26,7 @@ contract PNDC_ERC1155 is ERC1155, Ownable, ERC1155Supply {
         _setURI(newuri);
     }
 
-    function setTokenUri(string memory _uri, uint256 _tokenId) public {
+    function _setTokenUri(string memory _uri, uint256 _tokenId) private {
         _uris[_tokenId] = _uri;
     }
 
@@ -41,14 +41,14 @@ contract PNDC_ERC1155 is ERC1155, Ownable, ERC1155Supply {
         _setRoyaltiesByTokenId(tokenId, royalties);
         _tokenIdCounter.increment();
         _mint(account, tokenId, amount, data);
-        setTokenUri(uri, tokenId);
+        _setTokenUri(uri, tokenId);
         return tokenId;
     }
 
-    function burn(address _from, uint256 _id, uint256 _amount) public {
-        require(balanceOf(_from, _id) >= _amount);
+    function burn(uint256 _id, uint256 _amount) public {
+        require(balanceOf(msg.sender, _id) >= _amount);
 
-        _burn(_from, _id, _amount);
+        _burn(msg.sender, _id, _amount);
     }
 
     function _setRoyaltiesByTokenId(
