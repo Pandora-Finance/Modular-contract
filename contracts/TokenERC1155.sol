@@ -25,7 +25,7 @@ contract TokenERC1155 is Ownable, ERC1155Supply {
         _setURI(newuri);
     }
 
-     function setTokenUri(string memory _uri, uint256 _tokenId) public {
+     function _setTokenUri(string memory _uri, uint256 _tokenId) private {
         _uris[_tokenId] = _uri;
     }
 
@@ -37,13 +37,13 @@ contract TokenERC1155 is Ownable, ERC1155Supply {
         bytes memory data
     ) public onlyOwner {
         _mint(account, id, amount, data);
-        setTokenUri(_uri, id);
+        _setTokenUri(_uri, id);
     }
 
-    function burn(address _from, uint256 _id, uint256 _amount) public {
-        require(balanceOf(_from, _id) >= _amount);
+    function burn(uint256 _id, uint256 _amount) public {
+        require(balanceOf(msg.sender, _id) >= _amount);
 
-        _burn(_from, _id, _amount);
+        _burn(msg.sender, _id, _amount);
     }
 
     function setRoyaltiesByTokenId(

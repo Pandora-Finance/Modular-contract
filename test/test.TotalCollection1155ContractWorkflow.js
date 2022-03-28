@@ -175,5 +175,23 @@ contract("TokenFactory1155", (accounts) => {
       assert.equal(meta.status, false);
       assert.equal(await instance2.balanceOf(accounts[0], 1), 10);
     });
+
+    it("Testing the burn function", async () => {
+      const instance = await TokenFactory1155.deployed();
+      collectionMeta = await instance.collections(1);
+      collectionAddress = collectionMeta[1];
+      instance2 = await TokenERC1155.at(collectionAddress);
+
+      result = await instance2.mint(accounts[3], 4, 100, "TokenUri", []);
+      result2 = await instance2.balanceOf(accounts[3], 4);
+      assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+      assert.equal(result2, 100);
+  
+      await instance2.burn(4, 99, {from: accounts[3]});
+      result3 = await instance2.balanceOf(accounts[3],4);
+      assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+      assert.equal(result3,1);
+  
+    })
   });
 });
