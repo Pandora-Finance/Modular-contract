@@ -136,6 +136,19 @@ contract("PNDC_ERC721", (accounts) => {
 
   });
 
+  it("Testing the burn function", async () => {
+    const instance = await PNDC_ERC721.deployed();
+
+    result = await instance.safeMint(accounts[0],"URI",[[accounts[0],500]]);  
+    result2 = await instance.ownerOf(2);
+    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result2,accounts[0]);
+
+    result3 = await instance.burn(2);
+    assert.equal(result3.receipt.logs[0].type, "mined", "Failed to mint");
+
+  });
+
 
  })
 

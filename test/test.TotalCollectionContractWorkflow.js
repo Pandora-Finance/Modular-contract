@@ -165,6 +165,22 @@ contract("TokenFactory", (accounts) => {
 
   });
 
+  it("Testing the burn function", async () => {
+    const instance = await TokenFactory.deployed();   
+    collectionMeta = await instance.collections(1);
+    collectionAddress = collectionMeta[2];
+    instance2 = await TokenERC721.at(collectionAddress);
+
+    result = await instance2.safeMint(accounts[0],"URI",[true,[[accounts[0],600]]]);  
+    result2 = await instance2.ownerOf(2);
+    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result2,accounts[0]);
+
+    result3 = await instance2.burn(2);
+    assert.equal(result3.receipt.logs[0].type, "mined", "Failed to mint");
+
+  });
+
 
 
  })
