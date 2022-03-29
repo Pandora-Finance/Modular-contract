@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.2;
 
 import "./Auction/Bid1155.sol";
 import "./Libraries/LibERC1155.sol";
