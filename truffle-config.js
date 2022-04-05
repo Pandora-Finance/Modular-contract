@@ -24,8 +24,9 @@
 // const mnemonic = fs.readFileSync(".env").toString().trim();
 require('dotenv').config();
 const HDWalletProvider = require('@truffle/hdwallet-provider');
-const mnemonic = process.env.PK
+const private_key = process.env.PK
 const bscapi = process.env.BSC_API
+const infuraApi = process.env.INFURA_API
 
 module.exports = {
   /**
@@ -55,15 +56,22 @@ module.exports = {
      gasPrice: 20000000000
     },
     testnet: {
-      provider: () => new HDWalletProvider(mnemonic, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      provider: () => new HDWalletProvider(private_key, `https://data-seed-prebsc-1-s1.binance.org:8545`),
       network_id: 97,
       confirmations: 10,
       timeoutBlocks: 200,
       skipDryRun: true
     },
+    bsc: {
+      provider: () => new HDWalletProvider(private_key, `https://bsc-dataseed1.binance.org`),
+      network_id: 56,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    },,
     rinkeby: {
       provider: function() { 
-       return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/6b3f79427eb54a588292c9203ad47a65");
+       return new HDWalletProvider(private_key, `https://rinkeby.infura.io/v3/${infuraApi}`);
       },
       network_id: 4,
       gas: 20000000,
@@ -71,11 +79,34 @@ module.exports = {
     },
     ropsten: {
       provider: function() {
-        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/6b3f79427eb54a588292c9203ad47a65")
+        return new HDWalletProvider(private_key, `https://ropsten.infura.io/v3/${infuraApi}`)
       },
       network_id: 3,
       gas: 7000000      //make sure this gas allocation isn't over 4M, which is the max
-    }
+    },
+    mainnet: {
+      provider: function() {
+        return new HDWalletProvider(private_key, `https://mainnet.infura.io/v3/${infuraApi}`)
+      },
+      network_id: 1,
+    },
+    maticmainnet: {
+			provider: function() {
+				return new HDWalletProvider(private_key, "https://rpc-mainnet.matic.network");
+			  },
+			  network_id: '137',
+		},
+		maticmumbai: {
+			provider: function() {
+				return new HDWalletProvider(private_key, "https://rpc-mumbai.matic.today");
+			  },
+			  network_id: '80001',
+        gas: 20000000,
+        gasPrice: 10000000000,
+        // confirmations: 10,
+        timeoutBlocks: 200,
+        skipDryRun: true
+		}
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
