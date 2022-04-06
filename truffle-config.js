@@ -68,14 +68,14 @@ module.exports = {
       confirmations: 10,
       timeoutBlocks: 200,
       skipDryRun: true
-    },,
+    },
     rinkeby: {
       provider: function() { 
        return new HDWalletProvider(private_key, `https://rinkeby.infura.io/v3/${infuraApi}`);
       },
       network_id: 4,
       gas: 20000000,
-      gasPrice: 10000000000,
+      // gasPrice: 10000000000,
     },
     ropsten: {
       provider: function() {
@@ -102,7 +102,7 @@ module.exports = {
 			  },
 			  network_id: '80001',
         gas: 20000000,
-        gasPrice: 10000000000,
+        // gasPrice: 10000000000,
         // confirmations: 10,
         timeoutBlocks: 200,
         skipDryRun: true
