@@ -43,3 +43,6 @@
         
         
    We are in the phase of auditing. Please consider it as beta version.
+
+## Audit Reports
+- Report by Quillhash [ View](https://github.com/Pandora-Finance/audit-report/blob/main/Pandora%20Finance%20Smart%20Contract%20Audit%20Report%20-%20QuillAudits.pdf)
