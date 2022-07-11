@@ -87,6 +87,7 @@ contract NFTBid is NFTFactoryContract {
     );
 
     _tokenMeta[_saleId].status = false;
+    _tokenMeta[_saleId].price = bids.price;
     Bids[_saleId][_bidOrderID].withdrawn = true;
 
     ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
@@ -122,6 +123,7 @@ contract NFTBid is NFTFactoryContract {
     require(msg.sender != _tokenMeta[_saleId].currentOwner);
     // BidOrder[] memory bids = Bids[_tokenId];
     LibBid.BidOrder memory bids = Bids[_saleId][_bidId];
+    require(_tokenMeta[_saleId].price != bids.price);
     require(bids.buyerAddress == msg.sender);
     require(!bids.withdrawn);
     (bool success, ) = payable(msg.sender).call{
