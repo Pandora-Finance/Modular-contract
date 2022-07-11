@@ -52,7 +52,7 @@ contract TokenFactory is UUPSUpgradeable, NFTBid {
         emit ERC721Deployed(msg.sender, collectionAddress);
     }
 
-        function getImplementation() public view onlyOwner returns(address) {
+    function getImplementation() public view onlyOwner returns(address) {
         address implementation = _getImplementation();
         return implementation;
     }
