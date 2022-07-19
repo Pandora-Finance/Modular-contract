@@ -17,16 +17,16 @@
  * phrase from a file you've .gitignored so it doesn't accidentally become public.
  *
  */
- 
+
 //  const HDWalletProvider = require('truffle-hdwallet-provider');
 // //
 //  const fs = require('fs');
 // const mnemonic = fs.readFileSync(".env").toString().trim();
-require('dotenv').config();
-const HDWalletProvider = require('@truffle/hdwallet-provider');
-const private_key = process.env.PK
-const bscapi = process.env.BSC_API
-const infuraApi = process.env.INFURA_API
+require("dotenv").config();
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const private_key = process.env.PK;
+const bscapi = process.env.BSC_API;
+const infuraApi = process.env.INFURA_API;
 
 module.exports = {
   /**
@@ -39,7 +39,7 @@ module.exports = {
    * $ truffle test --network <network-name>
    */
   api_keys: {
-    bscscan: bscapi
+    bscscan: bscapi,
   },
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
@@ -49,64 +49,88 @@ module.exports = {
     // options below to some value.
     //
     development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 9545,            // Standard Ethereum port (default: none)
-     network_id: "5777",       // Any network (default: none)
-     gas: 6721975,
-     gasPrice: 20000000000
+      host: "127.0.0.1", // Localhost (default: none)
+      port: 9545, // Standard Ethereum port (default: none)
+      network_id: "5777", // Any network (default: none)
+      gas: 6721975,
+      gasPrice: 20000000000,
     },
     testnet: {
-      provider: () => new HDWalletProvider(private_key, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      provider: () =>
+        new HDWalletProvider(
+          private_key,
+          `https://data-seed-prebsc-1-s1.binance.org:8545`
+        ),
       network_id: 97,
       confirmations: 10,
       timeoutBlocks: 200,
-      skipDryRun: true
+      skipDryRun: true,
     },
     bsc: {
-      provider: () => new HDWalletProvider(private_key, `https://bsc-dataseed1.binance.org`),
+      provider: () =>
+        new HDWalletProvider(
+          private_key,
+          `https://bsc.getblock.io/mainnet/?api_key=0d3c7b85-4ab6-49d3-928c-22c43ed1e05e`
+        ),
       network_id: 56,
-      confirmations: 10,
-      timeoutBlocks: 200,
-      skipDryRun: true
+      // confirmations: 10,
+      // timeoutBlocks: 200,
+      skipDryRun: true,
     },
     rinkeby: {
-      provider: function() { 
-       return new HDWalletProvider(private_key, `https://rinkeby.infura.io/v3/${infuraApi}`);
+      provider: function () {
+        return new HDWalletProvider(
+          private_key,
+          `https://rinkeby.infura.io/v3/${infuraApi}`
+        );
       },
       network_id: 4,
       gas: 20000000,
       // gasPrice: 10000000000,
     },
     ropsten: {
-      provider: function() {
-        return new HDWalletProvider(private_key, `https://ropsten.infura.io/v3/${infuraApi}`)
+      provider: function () {
+        return new HDWalletProvider(
+          private_key,
+          `https://ropsten.infura.io/v3/${infuraApi}`
+        );
       },
       network_id: 3,
-      gas: 7000000      //make sure this gas allocation isn't over 4M, which is the max
+      gas: 7000000, //make sure this gas allocation isn't over 4M, which is the max
     },
     mainnet: {
-      provider: function() {
-        return new HDWalletProvider(private_key, `https://mainnet.infura.io/v3/${infuraApi}`)
+      provider: function () {
+        return new HDWalletProvider(
+          private_key,
+          `https://mainnet.infura.io/v3/${infuraApi}`
+        );
       },
       network_id: 1,
     },
     maticmainnet: {
-			provider: function() {
-				return new HDWalletProvider(private_key, "https://rpc-mainnet.matic.network");
-			  },
-			  network_id: '137',
-		},
-		maticmumbai: {
-			provider: function() {
-				return new HDWalletProvider(private_key, "https://rpc-mumbai.matic.today");
-			  },
-			  network_id: '80001',
-        gas: 20000000,
-        // gasPrice: 10000000000,
-        // confirmations: 10,
-        timeoutBlocks: 200,
-        skipDryRun: true
-		}
+      provider: function () {
+        return new HDWalletProvider(
+          private_key,
+          "https://polygon-mainnet.g.alchemy.com/v2/xwVWfGihGBS4IrEQPZCYmKOF0zMSi4qM"
+        );
+      },
+      network_id: "137",
+      gasPrice: 470000000000,
+    },
+    maticmumbai: {
+      provider: function () {
+        return new HDWalletProvider(
+          private_key,
+          "https://rpc-mumbai.matic.today"
+        );
+      },
+      network_id: "80001",
+      gas: 20000000,
+      // gasPrice: 10000000000,
+      // confirmations: 10,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+    },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
@@ -132,34 +156,34 @@ module.exports = {
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
-  //   rinkeby: {
-  //     provider: function() { 
-  //      return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/9b9eb1dc6a49420db58a6dbe37a77555");
-  //     },
-  //     network_id: 4,
-  //     gas: 4500000,
-  //     gasPrice: 10000000000,
-  // }
+    //   rinkeby: {
+    //     provider: function() {
+    //      return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/9b9eb1dc6a49420db58a6dbe37a77555");
+    //     },
+    //     network_id: 4,
+    //     gas: 4500000,
+    //     gasPrice: 10000000000,
+    // }
   },
 
   // Set default mocha options here, use special reporters etc.
   mocha: {
-    before_timeout: 220000 // <--- units in ms
+    before_timeout: 220000, // <--- units in ms
   },
 
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.8.2",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.8.2", // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
-        optimizer: {
-          enabled: true,
-          runs: 200
-        },
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
       //  evmVersion: "byzantium"
       // }
-    }
+    },
   },
 
   // Truffle DB is currently disabled by default; to enable it, change enabled:
@@ -169,21 +193,18 @@ module.exports = {
   // NOTE: It is not possible to migrate your contracts to truffle DB and you should
   // make a backup of your artifacts to a safe location before enabling this feature.
   //
-  // After you backed up your artifacts you can utilize db by running migrate as follows: 
+  // After you backed up your artifacts you can utilize db by running migrate as follows:
   // $ truffle migrate --reset --compile-all
   //
   // db: {
-    // enabled: false,
-    // host: "127.0.0.1",
-    // adapter: {
-    //   name: "sqlite",
-    //   settings: {
-    //     directory: ".db"
-    //   }
-    // }
+  // enabled: false,
+  // host: "127.0.0.1",
+  // adapter: {
+  //   name: "sqlite",
+  //   settings: {
+  //     directory: ".db"
+  //   }
   // }
-  plugins: [
-    'truffle-contract-size',
-    'truffle-plugin-verify'
-  ]
+  // }
+  plugins: ["truffle-contract-size", "truffle-plugin-verify"],
 };
