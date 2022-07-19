@@ -10,7 +10,7 @@ contract("PNDC_ERC721", (accounts) => {
 
     result = await instance.safeMint(accounts[0],"URI",[[accounts[3],500]]);  
     result2 = await instance.ownerOf(0);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true, false);   
     assert.equal(result2,accounts[0]);
     
   });  
@@ -21,7 +21,7 @@ contract("PNDC_ERC721", (accounts) => {
 
   
     //result = await instance2.initialize(instance.address) ;
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+    assert.equal(result.receipt.status, true, false); 
     
   });  
 
@@ -32,7 +32,7 @@ contract("PNDC_ERC721", (accounts) => {
     
     await instance.approve(instance2.address,0);
     result2 = await instance2.sellNFT(instance.address,0,600);
-    assert.equal(result2.receipt.logs[0].type, "mined", "Failed to mint");
+    assert.equal(result2.receipt.status, true, false);
   });  
 
   it("Testing smart contract BuyNFT function ", async () => {
@@ -111,7 +111,7 @@ contract("PNDC_ERC721", (accounts) => {
 
     result = await instance.safeMint(accounts[0],"URI",[[accounts[0],500]]);  
     result2 = await instance.ownerOf(1);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true, false);  
     assert.equal(result2,accounts[0]);
 
     await instance.approve(instance2.address, 1);
@@ -141,11 +141,11 @@ contract("PNDC_ERC721", (accounts) => {
 
     result = await instance.safeMint(accounts[0],"URI",[[accounts[0],500]]);  
     result2 = await instance.ownerOf(2);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true, false);   
     assert.equal(result2,accounts[0]);
 
     result3 = await instance.burn(2);
-    assert.equal(result3.receipt.logs[0].type, "mined", "Failed to mint");
+    assert.equal(result3.receipt.status, true, false);
 
   });
 

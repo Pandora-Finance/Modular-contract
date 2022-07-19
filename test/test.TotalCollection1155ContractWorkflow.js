@@ -11,7 +11,8 @@ contract("TokenFactory1155", (accounts) => {
         "Description Of ERC1155 Collection",
         [[accounts[3], 500]]
       );
-      assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+      console.log(result.type)
+      assert.equal(result.receipt.status, true, false);
     });
 
     it("Creating new TokenERC1155 instance", async () => {
@@ -33,7 +34,8 @@ contract("TokenFactory1155", (accounts) => {
       instance2 = await TokenERC1155.at(collectionAddress);
 
       result = await instance2.mint(accounts[0], 0, 10, "uri", []);
-      assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+      console.log(result)
+      assert.equal(result.receipt.status, true, false);
     });
 
     it("Testing collection sale", async () => {
@@ -45,7 +47,7 @@ contract("TokenFactory1155", (accounts) => {
       await instance2.setApprovalForAll(instance.address, true);
       result = await instance.sellNFT(collectionAddress, 0, 500, 5);
 
-      assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+      assert.equal(result.receipt.status, true, false);
 
       assert.equal(await instance2.balanceOf(accounts[0], 0), "5");
       assert.equal(await instance2.balanceOf(instance.address, 0), "5");
@@ -161,7 +163,7 @@ contract("TokenFactory1155", (accounts) => {
 
       result = await instance2.mint(accounts[0], 1, 10, "uri", []);
       result2 = await instance2.balanceOf(accounts[0], 1);
-      assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+      assert.equal(result.receipt.status, true, false);
       assert.equal(result2, 10);
 
       await instance2.setApprovalForAll(instance.address, true);
@@ -184,12 +186,12 @@ contract("TokenFactory1155", (accounts) => {
 
       result = await instance2.mint(accounts[3], 4, 100, "TokenUri", []);
       result2 = await instance2.balanceOf(accounts[3], 4);
-      assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+      assert.equal(result.receipt.status, true, false);
       assert.equal(result2, 100);
   
       await instance2.burn(4, 99, {from: accounts[3]});
       result3 = await instance2.balanceOf(accounts[3],4);
-      assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+      assert.equal(result.receipt.status, true, false);  
       assert.equal(result3,1);
   
     })
