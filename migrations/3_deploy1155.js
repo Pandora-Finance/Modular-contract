@@ -1,4 +1,5 @@
 const { deployProxy } = require("@openzeppelin/truffle-upgrades");
+require('dotenv').config();
 
 const NFTBid1155 = artifacts.require("NFTBid1155");
 const TokenFactory1155 = artifacts.require("TokenFactory1155");
@@ -24,7 +25,7 @@ module.exports = async function (deployer) {
   await deployer.deploy(PNDC_ERC1155, "NFT");
   var pndc1155 = await PNDC_ERC1155.deployed();
   
-  await deployProxy(TokenFactory1155, [pndc1155.address, "0xE850d0221BE67813D47EfF75E62684E679623093"], {
+  await deployProxy(TokenFactory1155, [pndc1155.address, process.env.FEE_ADDRESS], {
     kind: "uups",
     unsafeAllow: ["external-library-linking"],
   }).then((res) => console.log("Factory1155", res.address));

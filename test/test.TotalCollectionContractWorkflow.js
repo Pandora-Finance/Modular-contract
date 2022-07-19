@@ -7,7 +7,7 @@ contract("TokenFactory", (accounts) => {
     const instance = await TokenFactory.deployed();   
 
     result = await instance.deployERC721("nameERC721","SymbolERC721","Description Of ERC721 Collection",[[accounts[0],500]]);  
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");     
+    assert.equal(result.receipt.status, true, false);     
     
   });  
 
@@ -32,7 +32,7 @@ contract("TokenFactory", (accounts) => {
 
     
     result = await instance2.safeMint(accounts[0],"URI_ERC721",[true,[[accounts[3],600]]]);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");     
+    assert.equal(result.receipt.status, true, false); 
     
   });  
 
@@ -47,7 +47,7 @@ contract("TokenFactory", (accounts) => {
     await instance2.approve(instance.address,0);
     result = await instance.sellNFT(collectionAddress,0,500);
 
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");     
+    assert.equal(result.receipt.status, true, false);      
     
   });  
 
@@ -140,7 +140,7 @@ contract("TokenFactory", (accounts) => {
 
     result = await instance2.safeMint(accounts[0],"URI",[true,[[accounts[0],600]]]);  
     result2 = await instance2.ownerOf(1);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true, false);   
     assert.equal(result2,accounts[0]);
 
     await instance2.approve(instance.address, 1);
@@ -173,11 +173,11 @@ contract("TokenFactory", (accounts) => {
 
     result = await instance2.safeMint(accounts[0],"URI",[true,[[accounts[0],600]]]);  
     result2 = await instance2.ownerOf(2);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true, false);   
     assert.equal(result2,accounts[0]);
 
     result3 = await instance2.burn(2);
-    assert.equal(result3.receipt.logs[0].type, "mined", "Failed to mint");
+    assert.equal(result3.receipt.status, true, false);
 
   });
 
