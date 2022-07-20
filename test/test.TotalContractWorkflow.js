@@ -76,6 +76,9 @@ contract("PNDC_ERC721", (accounts) => {
     await instance2.Bid(2,{from:accounts[2],value:1000});
     await instance2.Bid(2,{from:accounts[3],value:1100});
     await instance2.Bid(2,{from:accounts[4],value:1200});
+    await instance2.Bid(2,{from:accounts[5],value:1300});
+
+    //await instance2.withdrawBidMoney(2,3,{from:accounts[5]});
     
     result = await instance2.Bids(2,2)
     assert.equal(result.buyerAddress, accounts[4]);
@@ -100,7 +103,8 @@ contract("PNDC_ERC721", (accounts) => {
     const instance2 = await TokenFactory.deployed();      
     
     await instance2.withdrawBidMoney(2,1,{from:accounts[3]});    
-    await instance2.withdrawBidMoney(2,2,{from:accounts[4]});   
+    await instance2.withdrawBidMoney(2,2,{from:accounts[4]});
+    await instance2.withdrawBidMoney(2,3,{from:accounts[5]})   
     result = await web3.eth.getBalance(instance2.address);
     assert.equal( result , 0);
   });

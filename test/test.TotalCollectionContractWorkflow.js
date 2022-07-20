@@ -99,6 +99,9 @@ contract("TokenFactory", (accounts) => {
     await instance.Bid(2,{from:accounts[2],value:1000});
     await instance.Bid(2,{from:accounts[3],value:1100});
     await instance.Bid(2,{from:accounts[4],value:1200});
+    await instance.Bid(2,{from:accounts[5],value:1300});
+
+    //await instance.withdrawBidMoney(2,3,{from:accounts[5]})
     
     result = await instance.Bids(2,2)
     assert.equal(result.buyerAddress, accounts[4]);
@@ -127,7 +130,8 @@ contract("TokenFactory", (accounts) => {
     instance2 = await TokenERC721.at(collectionAddress);        
     
     await instance.withdrawBidMoney(2,1,{from:accounts[3]});    
-    await instance.withdrawBidMoney(2,2,{from:accounts[4]});   
+    await instance.withdrawBidMoney(2,2,{from:accounts[4]});
+    await instance.withdrawBidMoney(2,3,{from:accounts[5]})   
     result = await web3.eth.getBalance(instance.address);
     assert.equal( result , 0);
   });   
