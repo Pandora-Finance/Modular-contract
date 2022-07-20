@@ -12,6 +12,7 @@ const LibCollection = artifacts.require("LibCollection");
 const NFTFactoryContract = artifacts.require("NFTFactoryContract");
 const NFTStorage = artifacts.require("NFTV1Storage");
 const PNDC_ERC721 = artifacts.require("PNDC_ERC721");
+const ProxyMarketplaceFactory = artifacts.require("ProxyMarketplaceFactory");
 
 module.exports = async function (deployer) {
   await deployer.deploy(LibMeta);
@@ -25,11 +26,28 @@ module.exports = async function (deployer) {
 
   await deployer.deploy(PNDC_ERC721, "NFT", "NFT");
   var pndc = await PNDC_ERC721.deployed();
+
+  let result = 0;
   
   await deployProxy(TokenFactory, [pndc.address, process.env.FEE_ADDRESS], {
     kind: "uups",
     unsafeAllow: ["external-library-linking"],
-  }).then((res) => console.log("Factory", res.address));
+  }).then((res) => {
+    result = res.address;
+    console.log("Factory", res.address);
+  });
+
+  result = await TokenFactory.deployed();
+  let addr = await result.getImplementation();
+  console.log("Factory implementation", addr);
+
+  let factory = await TokenFactory.at(addr);
+  await factory.initialize(pndc.address, "0xE850d0221BE67813D47EfF75E62684E679623093");
+
+  await deployer.deploy(ProxyMarketplaceFactory, addr);
+  const instance = await ProxyMarketplaceFactory.deployed();
+  console.log("Cloning contract: ", instance.address);
+
   console.log("PNDC", pndc.address);
 
 };
