@@ -50,6 +50,11 @@ contract TokenFactory1155 is UUPSUpgradeable, NFTBid1155 {
         emit ERC1155Deployed(msg.sender, collectionAddress);
     }
 
+    function getImplementation() public view onlyOwner returns(address) {
+        address implementation = _getImplementation();
+        return implementation;
+    }
+
     function _authorizeUpgrade(address newImplementation)
         internal
         override

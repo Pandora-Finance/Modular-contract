@@ -10,6 +10,7 @@ const LibCollection = artifacts.require("LibCollection");
 const NFTFactoryContract1155 = artifacts.require("NFTFactoryContract1155");
 const NFTStorage1155 = artifacts.require("NFTV1Storage1155");
 const PNDC_ERC1155 = artifacts.require("PNDC_ERC1155");
+const proxyMarketplace1155Factory = artifacts.require("ProxyMarketplace1155Factory");
 
 module.exports = async function (deployer) {
 
@@ -29,5 +30,17 @@ module.exports = async function (deployer) {
     kind: "uups",
     unsafeAllow: ["external-library-linking"],
   }).then((res) => console.log("Factory1155", res.address));
+
+  result = await TokenFactory1155.deployed();
+  let addr = await result.getImplementation();
+  console.log("Factory implementation", addr);
+
+  let factory1155 = await TokenFactory1155.at(addr);
+  await factory1155.initialize(pndc1155.address, "0xE850d0221BE67813D47EfF75E62684E679623093");
+
+  await deployer.deploy(proxyMarketplace1155Factory, addr);
+  const instance = await proxyMarketplace1155Factory.deployed();
+  console.log("1155 Cloning contract: ", instance.address);
+
   console.log("PNDC1155", pndc1155.address);
 };
