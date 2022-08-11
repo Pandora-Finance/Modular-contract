@@ -185,6 +185,25 @@ contract("TokenFactory", (accounts) => {
 
   });
 
+  it("testing cancel sale withdraw bid", async () => {
+    const instance = await TokenFactory.deployed();   
+    collectionMeta = await instance.collections(1);
+    collectionAddress = collectionMeta[2];
+    instance2 = await TokenERC721.at(collectionAddress);
+
+    result = await instance2.safeMint(accounts[0],"URI",[true, [[accounts[0],500]]]); 
+    await instance2.approve(instance.address,3,{from:accounts[0]});
+    await instance.SellNFT_byBid(instance2.address,3,600,300,{from:accounts[0]});
+
+    await instance.Bid(5,{from:accounts[1],value:1000});
+    await instance.cancelSale(5, {from:accounts[0]});
+
+    result = await instance._tokenMeta(5);
+    console.log(result);
+    assert.equal(result.price, 0);
+    await instance.withdrawBidMoney(5,0,{from:accounts[1]});
+  })
+
 
 
  })

@@ -153,6 +153,23 @@ contract("PNDC_ERC721", (accounts) => {
 
   });
 
+  it("testing cancel sale withdraw bid", async () => {
+    const instance = await PNDC_ERC721.deployed();
+    const instance2 = await TokenFactory.deployed();
+
+    result = await instance.safeMint(accounts[0],"URI",[[accounts[0],500]]); 
+    await instance.approve(instance2.address,3,{from:accounts[0]});
+    await instance2.SellNFT_byBid(instance.address,3,600,300,{from:accounts[0]});
+
+    await instance2.Bid(5,{from:accounts[1],value:1000});
+    await instance2.cancelSale(5, {from:accounts[0]});
+
+    result = await instance2._tokenMeta(5);
+    console.log(result);
+    assert.equal(result.price, 0);
+    await instance2.withdrawBidMoney(5,0,{from:accounts[1]});
+  })
+
 
  })
 
