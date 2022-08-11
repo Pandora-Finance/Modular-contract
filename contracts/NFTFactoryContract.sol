@@ -102,6 +102,7 @@ contract NFTFactoryContract is
     require(msg.sender == _tokenMeta[_saleId].currentOwner);
     require(_tokenMeta[_saleId].status);
 
+    _tokenMeta[_saleId].price = 0;
     _tokenMeta[_saleId].status = false;
     ERC721(_tokenMeta[_saleId].collectionAddress).safeTransferFrom(
       address(this),
