@@ -10,7 +10,7 @@ contract("PNDC_ERC1155", (accounts) => {
 
     result = await instance2.mint(accounts[0],10,[],"uri",[[accounts[3],500]]);  
     result2 = await instance2.balanceOf(accounts[0],0);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true);  
     assert.equal(result2,10);
     
   });  
@@ -21,7 +21,7 @@ contract("PNDC_ERC1155", (accounts) => {
 
   
     //result = await instance2.initialize(instance.address) ;
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+    assert.equal(result.receipt.status, true);
     
   });  
 
@@ -33,7 +33,7 @@ contract("PNDC_ERC1155", (accounts) => {
     await instance2.setApprovalForAll(instance.address,true);
     result = await instance.sellNFT(instance2.address,0,500,5);
 
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");
+    assert.equal(result.receipt.status, true);
     
     assert.equal(await instance2.balanceOf(accounts[0], 0), "5");
     assert.equal(await instance2.balanceOf(instance.address, 0), "5");
@@ -124,7 +124,7 @@ contract("PNDC_ERC1155", (accounts) => {
 
     result = await instance2.mint(accounts[0],10,[],"uri",[[accounts[3],500]]);  
     result2 = await instance2.balanceOf(accounts[0],1);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true);  
     assert.equal(result2,10);
 
     await instance2.setApprovalForAll(instance.address, true);
@@ -145,12 +145,12 @@ contract("PNDC_ERC1155", (accounts) => {
 
     result = await instance.mint(accounts[0],5,[],"uriii",[[accounts[3],500]]); 
     result2 = await instance.balanceOf(accounts[0],2);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true); 
     assert.equal(result2,5);
 
     await instance.burn(2, 3);
     result3 = await instance.balanceOf(accounts[0],2);
-    assert.equal(result.receipt.logs[0].type, "mined", "Failed to mint");   
+    assert.equal(result.receipt.status, true);
     assert.equal(result3,2);
 
   });
