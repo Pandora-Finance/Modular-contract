@@ -217,6 +217,7 @@ contract("PNDC_ERC721", (accounts) => {
         const oldImplementation = await clone.implementation("marketplace", version);
         assert.equal(version, 1);
 
+        //fails when address = address(0)
         result = await clone.updateImplementation("marketplace", accounts[3]);
 
         version = await clone.currentVersion("marketplace");

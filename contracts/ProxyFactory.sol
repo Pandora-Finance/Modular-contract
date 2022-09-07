@@ -51,6 +51,7 @@ contract ProxyFactory is Ownable {
         string memory _contractType,
         address _newImplementation
     ) external onlyOwner {
+        require(_newImplementation != address(0));
         address oldImplementation = implementation[_contractType][currentVersion[_contractType]];
         currentVersion[_contractType] ++;
         implementation[_contractType][currentVersion[_contractType]] = _newImplementation;
