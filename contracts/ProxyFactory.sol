@@ -15,6 +15,7 @@ contract ProxyFactory is Ownable {
     mapping(string => mapping(uint256 => address)) public implementation;
     mapping(string => uint256) public currentVersion;
     mapping(address => Proxy[]) internal deployedProxies;
+    mapping(address => Proxy) public proxyMetadata;
 
     event newContractProxy(uint256 _contractVersion, string _type, address _proxy, address _owner);
     event updatedImplementation(uint256 _newVersion, string _type, address _from, address _to);
@@ -32,6 +33,7 @@ contract ProxyFactory is Ownable {
         address newAddress = Clones.clone(implementation[_contractType][currentVersion[_contractType]]);
         Proxy memory newProxy = Proxy(currentVersion[_contractType], _contractType, newAddress);
         deployedProxies[msg.sender].push(newProxy);
+        proxyMetadata[newAddress] = newProxy;
         Address.functionCall(newAddress, _data);
         Ownable(newAddress).transferOwnership(_owner);
         emit newContractProxy(currentVersion[_contractType], _contractType, newProxy.proxyAddress, _owner);

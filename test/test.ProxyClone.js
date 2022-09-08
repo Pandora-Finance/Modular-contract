@@ -39,6 +39,11 @@ contract("PNDC_ERC721", (accounts) => {
 
         assert.equal(await result.logs[0].address, result2[0][2]);
 
+        let meta = await clone.proxyMetadata(result2[0][2]);
+        assert.equal(meta.contractVersion, 1);
+        assert.equal(meta.contractType, "marketplace");
+        assert.equal(meta.proxyAddress, result2[0][2])
+
         const instance2 = await TokenFactory.at(result2[0][2]);
         assert.equal(await instance2.owner(), accounts[0]);
       });
